@@ -1,0 +1,13 @@
+.DS_Store
+.git
+.gitignore
+.travis.yml
+Gruntfile.js
+Makefile
+README.md
+bin
+composer.json
+composer.lock
+phpunit.xml
+tests
+vendor

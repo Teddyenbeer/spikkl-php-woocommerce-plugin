@@ -1,0 +1,36 @@
+language: php
+services:
+- mysql
+jobs:
+  include:
+  - php: 5.6
+    dist: trusty
+    env: WP_VERSION=latest WP_MULTISITE=0
+  - php: 5.6
+    dist: trusty
+    env: WP_VERSION=4.4 WP_MULTISITE=0
+  - php: 7.1
+    dist: xenial
+    env: WP_VERSION=latest WP_MULTISITE=0
+  - php: 7.2
+    dist: xenial
+    env: WP_VERSION=latest WP_MULTISITE=0
+cache:
+  directories:
+  - "$HOME/.composer/cache"
+install:
+- travis_retry composer install --no-scripts --no-suggest
+before_script:
+- bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+script:
+- vendor/bin/phpunit
+before_deploy:
+- bash bin/create-build.sh
+deploy:
+  provider: releases
+  api_key:
+    secure: RbHacaxYsqZ1LkjMMlk1xczzPAKG2tdJ1mOg82cR4Su4kWuI/NJDFtKyFv/GxHMfLdx/0LMX/n5JFnYHOnkgDbQB9kCliYKfg+ABJ76FzBpaPATMt7wre5zAfnsi8wFJMKyQxn7osYAoc8PAxQ6NYdQKvHwYxjCo2mmmN4OaDzK5c2bYh21S2z7MeKXKGNnQvhhm9K0KB7xe92PGWBZsUU9yTOjd/L4b843yKd9M/2BuLn+aow8co9vHnYfC/UVj+wy/paBq81TXkg1EVZDa44Tyk4yBzjR+vOHZrQYjPDoL9umjQAN3ZJANmUaDK8l/e2Bf5yBzrbkmNZ8NgtzeHlMFalU7qL803qM9U+o8fUMc/owjZ01VhKPiPCGEI5fGxQSHNfA6kFDRFkCfgo68lv+7oWRELXkQisjXuh9MtA0LLubDJ9Vvydhtp4M1f50HcIXrXWof3LuXjJkrYRwROTbTYWML1ujc+UMneikYjeQq3sMonhAjhlFQ9LG5UrSKROjcuGwaeSMfXxZ6L2V+O1eVgqy6oi37XexRo2c/RMNOHDkDwB03qCtMzDMqj2/wd/U+tFlUWN+eQQELpWF0Z8DBPlAskdfD4ZidLFf1ExV0J3+XNyeHKO7DkRQXU3X2f09FswupdzC3PVpfA4y8ssedu6IUqXZuqUsMr/MFajU=
+  file: spikkl-php-woocommerce-plugin.zip
+  on:
+    tags: true
+    php: 7.2

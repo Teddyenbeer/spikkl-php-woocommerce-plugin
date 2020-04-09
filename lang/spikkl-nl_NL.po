@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Spikkl Address Lookup\n"
+"Report-Msgid-Bugs-To: Edwin van den Berg <support@spikkl.nl>\n"
+"POT-Creation-Date: 2020-01-02 00:00:00+0100\n"
+"Mime-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2020-0408 15:13+0100\n"
+"Last-Translator: Edwin van den Berg <support@spikkl.nl>\n"
+"Language-Team: Nederlands\n"
+"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: includes/admin/spikkl-admin.php
+msgid "Invalid API key provided. Your API key should have 32 characters and should consist of numbers and letters only."
+msgstr "Onjuiste API key. De API key moet een combinatie zijn van 32 letters en cijfers."
+
+msgid "You cannot enable Spikkl Address Lookup without a valid API key."
+msgstr "Ja kan de Spikkl Address Lookup plugin niet activeren als je geen valide API key hebt ingevuld."
+
+msgid "Not accessible"
+msgstr "Geen toegang"
+
+msgid "Address Lookup"
+msgstr "Adresvalidatie"
+
+msgid "Settings"
+msgstr "Instellingen"
+
+#: includes/admin/spikkl-admin-notice.php
+msgid "Spikkl Address Lookup: WooCommerce is required."
+msgstr "Spikkl Address Lookup: WooCommerce nodig voor de werking van deze plugin."
+
+msgid "The WooCommerce plugin is required and to be activated in order to add address validation and lookup to the checkout form."
+msgstr "De WooCommerce plugin is benodigd en moet geactiveerd zijn om gebruik te kunnen maken van adresvalidatie tijdens het betaalproces."
+
+msgid "Spikkl Address Lookup: Set the API key"
+msgstr "Spikkl Address Lookup: voeg een API key toe"
+
+msgid "An API key is required in order to use address validation and lookup in the checkout form. Set your API key in the settings."
+msgstr "Een API key is verplicht om adresvalidatie te gebruiken tijdens het betaalproces. Ja kan je API key toevoeging in de instellingen."
+
+#: includes/admin/spikkl-admin-template.php
+msgid "Spikkl Address Lookup Settings"
+msgstr "Spikkl Adresvalidatie Instellingen"
+
+msgid "In order to use the Spikkl Address Lookup service, you must have an account. If you do not have an account already, <a href="%s" target="_blank">signup</a> and copy the API key provided."
+msgstr "Voor het gebruik van de Spikkl Adresvalidatie, heb je een account nodig. Heb je nog geen account, <a href="%s" target="_blank">registreer</a> je en kopieer de API key."
+
+msgid "Default settings"
+msgstr "Standaard instellingen"
+
+msgid "Lookup enabled"
+msgstr "Inschakelen"
+
+msgid "Enable address lookup for billing and checkout address for supported countries."
+msgstr "Schakel de adresvalidatie in voor het betaalprocess."
+
+msgid "The Spikkl API key should be 32 characters long and consist of alpha numeric characters. An API key is required to enable the service."
+msgstr "The Spikkl API key moet 32 karacters lang zijn en mag enkel letters en cijfers bevatten. Een API key is verplicht om de service te gebruiken."
+
+msgid "Security settings"
+msgstr "Beveiliging"
+
+msgid "Validate referrer"
+msgstr "Valideer oorsprong"
+
+msgid "Enable site domain validation of each request. Additional restrictions of the referrer need to be configured on the <a href="%s" target="_blank">Spikkl credentials page</a>."
+msgstr "Site domein validatie per aanvraag. Aanvulende estricties bij de oorsprong van de aanvraag kan aangepast worden op <a href="%s" target="_blank">Spikkl API key pagina</a>."
+
+#: includes/integrations/spikkl-woocommerce-integration.php
+msgid "Invalid postcode format"
+msgstr "Onjuiste postcode"
+
+msgid "Invalid street number format"
+msgstr "Onjuist huisnummer"
+
+msgid "Invalid street number suffix format"
+msgstr "Onjuiste huisnummer toevoeging"
