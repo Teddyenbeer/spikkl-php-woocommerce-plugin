@@ -4,6 +4,7 @@
 .travis.yml
 Gruntfile.js
 Makefile
+LICENSE
 README.md
 bin
 composer.json
