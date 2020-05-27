@@ -21,7 +21,7 @@ if ( ! class_exists( 'Spikkl_Settings' ) ) {
 
         public $is_enabled = '0';
 
-        public $validate_referrer = '1';
+        public $validate_referrer = '0';
 
         protected static $_instance;
 
@@ -58,11 +58,11 @@ if ( ! class_exists( 'Spikkl_Settings' ) ) {
         }
 
         public function is_enabled() {
-            return $this->is_enabled;
+            return (bool) $this->is_enabled;
         }
 
         public function validate_referrer() {
-            return $this->validate_referrer;
+            return (bool) $this->validate_referrer;
         }
     }
 }

@@ -30,7 +30,7 @@
                                 <span><?php _e( 'Default settings', 'spikkl' ); ?></span>
                             </legend>
                             <label for="spikkl_settings_is_enabled">
-                                <input name="spikkl_settings[is_enabled]" type="checkbox" id="spikkl_settings_is_enabled" value="1" <?php checked( '1', $this->_settings->is_enabled() ); ?> >
+                                <input name="spikkl_settings[is_enabled]" type="checkbox" id="spikkl_settings_is_enabled" value="1" <?php checked( true, $this->_settings->is_enabled() ); ?> >
                                 <span><?php _e( 'Lookup enabled', 'spikkl' ); ?></span>
                             </label>
                             <br/>
@@ -42,7 +42,7 @@
                 <tr>
                     <th scope="row"> </th>
                     <td>
-                        <input name="spikkl_settings[api_key]" type="text" id="spikkl_settings_api_key" value="<?php echo $this->_settings->get_api_key(); ?>" class="regular-text ltr">
+                        <input name="spikkl_settings[api_key]" type="text" id="spikkl_settings_api_key" value="<?php echo esc_attr($this->_settings->get_api_key()); ?>" class="regular-text ltr">
                         <br/>
                         <p class="description">
                             <?php _e( 'The Spikkl API key should be 32 characters long and consist of alpha numeric characters. An API key is required to enable the service.', 'spikkl' ); ?>
@@ -58,7 +58,7 @@
                                 <span><?php _e( 'Security settings', 'spikkl' ); ?></span>
                             </legend>
                             <label for="spikkl_settings_validate_referrer">
-                                <input name="spikkl_settings[validate_referrer]" type="checkbox" id="spikkl_settings_validate_referrer" value="1" <?php checked( '1', $this->_settings->validate_referrer() ); ?> >
+                                <input name="spikkl_settings[validate_referrer]" type="checkbox" id="spikkl_settings_validate_referrer" value="1" <?php checked( true, $this->_settings->validate_referrer() ); ?> >
                                 <span><?php _e( 'Validate referrer', 'spikkl' ); ?></span>
                             </label>
                             <br>

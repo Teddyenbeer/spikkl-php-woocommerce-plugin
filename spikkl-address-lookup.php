@@ -1,8 +1,14 @@
 <?php
 
 /*
+ *  @package           Spikkl Address Lookup
+ *  @author            Spikkl
+ *  @copyright         2020 Spikkl
+ *  @license           GPL-2.0-or-later
+ *
+ *  @wordpress-plugin
  *  Plugin Name: Spikkl Address Lookup
- *  Plugin URI: https://www.spikkl.nl/
+ *  Plugin URI: https://www.spikkl.nl/modules
  *  Description: Automatically validates the postcode and street number in the checkout form and fills in additional address data.
  *  Version: 1.0.0
  *  Author: Spikkl
@@ -57,7 +63,7 @@ if ( ! class_exists('Spikkl' ) ) {
 
             include_once( SPIKKL_PLUGIN_DIRECTORY . '/includes/integrations/spikkl-woocommerce-integration.php' );
 
-            add_action( 'plugins_loaded', array( __CLASS__, 'load_text_domain' ) );
+            add_action( 'plugins_loaded', array( $this, 'load_text_domain' ) );
         }
 
         public function load_text_domain() {

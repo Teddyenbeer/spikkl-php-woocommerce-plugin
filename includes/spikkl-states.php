@@ -40,7 +40,7 @@ if ( ! class_exists( 'Spikkl_States' ) ) {
         protected static $_instance;
 
         public function __construct() {
-            add_filter( 'woocommerce_states', array( __CLASS__, 'add_states' ) );
+            add_filter( 'woocommerce_states', array( $this, 'add_states' ) );
         }
 
         public static function instance() {
