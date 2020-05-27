@@ -24,7 +24,7 @@ if ( ! class_exists( 'Spikkl_Admin_Notice' ) ) {
         public function __construct() {
             $this->_settings = Spikkl_Settings::instance();
 
-            add_action( 'admin_notices', array( __CLASS__, 'admin_notices' ) );
+            add_action( 'admin_notices', array( $this, 'admin_notices' ) );
         }
 
         public static function instance() {

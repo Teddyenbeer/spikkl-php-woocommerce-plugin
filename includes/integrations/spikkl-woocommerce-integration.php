@@ -66,7 +66,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             if ( $this->_settings->is_enabled() && $this->_settings->has_api_key() ) {
                 $this->init_hooks();
 
-                add_action( 'wp_enqueue_scripts', array( __CLASS__, 'load_scripts' ) );
+                add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
 
                 $this->add_version_string( 'Spikkl/' . Spikkl::$version );
                 $this->add_version_string( 'PHP/' . PHP_VERSION );
@@ -84,13 +84,13 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         }
 
         public function init_hooks() {
-            add_filter( 'woocommerce_default_address_fields', array( __CLASS__, 'override_default_address_fields' ) );
-            add_filter( 'woocommerce_get_country_locale', array( __CLASS__, 'overwrite_country_locale' ) );
+            add_filter( 'woocommerce_default_address_fields', array( $this, 'override_default_address_fields' ) );
+            add_filter( 'woocommerce_get_country_locale', array( $this, 'overwrite_country_locale' ) );
 
-            add_action( 'wp_ajax_' . self::$_action, array( __CLASS__, 'perform_lookup' ) );
-            add_action( 'wp_ajax_nopriv_' . self::$_action, array( __CLASS__, 'perform_lookup' ) );
+            add_action( 'wp_ajax_' . self::$_action, array( $this, 'perform_lookup' ) );
+            add_action( 'wp_ajax_nopriv_' . self::$_action, array( $this, 'perform_lookup' ) );
 
-            add_action( 'woocommerce_after_checkout_validation', array( __CLASS__, 'after_checkout_validation' ) );
+            add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ) );
         }
 
         public function load_scripts() {
@@ -119,7 +119,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 )
             ));
 
-            wp_enqueue_style( 'spikkl_address_lookup', plugins_url( 'assets/css/spikkl-address-lookup.css', SPIKKL_PLUGIN_FILE ) );
+            wp_enqueue_style('spikkl_address_lookup', plugins_url( 'assets/css/spikkl-address-lookup' . $suffix . '.css', SPIKKL_PLUGIN_FILE ) );
         }
 
         public function override_default_address_fields( $fields ) {
@@ -188,9 +188,9 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 $this->error_occurred( 'API key required.' );
             }
 
-            $postal_code = rawurldecode( $_GET[ 'postal_code' ] );
-            $street_number = rawurldecode( $_GET[ 'street_number' ] );
-            $street_number_suffix = rawurldecode( $_GET[ 'street_number_suffix' ] );
+            $postal_code = sanitize_text_field( $_GET[ 'postal_code' ] );
+            $street_number = sanitize_text_field( $_GET[ 'street_number' ] );
+            $street_number_suffix = sanitize_text_field( $_GET[ 'street_number_suffix' ] );
 
             if (
                 ! $this->validate_postal_code( $postal_code ) ||

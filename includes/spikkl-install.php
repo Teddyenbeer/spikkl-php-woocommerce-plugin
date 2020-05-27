@@ -20,8 +20,8 @@ if ( ! class_exists( 'Spikkl_Install' ) ) {
         protected static $_instance;
 
         public function __construct() {
-            register_activation_hook( SPIKKL_PLUGIN_FILE, array( __CLASS__, 'activate' ) );
-            register_deactivation_hook( SPIKKL_PLUGIN_FILE, array( __CLASS__, 'deactivate' ) );
+            register_activation_hook( SPIKKL_PLUGIN_FILE, array( $this, 'activate' ) );
+            register_deactivation_hook( SPIKKL_PLUGIN_FILE, array( $this, 'deactivate' ) );
         }
 
         public static function instance() {
