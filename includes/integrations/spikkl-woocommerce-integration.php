@@ -115,7 +115,10 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 'errors' => array(
                     'invalid_postal_code' => __( 'Invalid postcode format', 'spikkl' ),
                     'invalid_street_number' => __( 'Invalid street number format', 'spikkl' ),
-                    'invalid_street_number_suffix' => __( 'Invalid street number suffix format', 'spikkl' )
+                    'invalid_street_number_suffix' => __( 'Invalid street number suffix format', 'spikkl' ),
+                    'invalid_address' => __( 'No address found', 'spikkl' ),
+                    'invalid_postal_code_or_street_number' => __( 'Invalid postcode or street number', 'spikkl' ),
+                    'unknown_error' => __( 'Unknown error occurred', 'spikkl' )
                 )
             ));
 
@@ -126,6 +129,8 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             if ( ! $this->_settings->is_enabled() ) {
                 return $fields;
             }
+
+            $fields['address_2']['class'][] = 'form-row-first';
 
             $fields['address_3'] = array(
                 'label'        => __( 'Street number suffix', 'woocommerce' ),
@@ -227,7 +232,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 'headers' => $headers
             ));
 
-            if ($response instanceof WP_Error || ! in_array( $response[ 'response' ][ 'code' ], [ 200, 400, 404 ], true ) ) {
+            if ($response instanceof WP_Error || ! in_array( $response[ 'response' ][ 'code' ], [ 200, 400 ], true ) ) {
                 $this->error_occurred( 'UNAVAILABLE' );
             } else {
                 echo $response[ 'body' ];

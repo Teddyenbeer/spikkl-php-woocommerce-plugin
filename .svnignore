@@ -6,9 +6,9 @@ Gruntfile.js
 Makefile
 LICENSE
 README.md
-bin
+bin/
 composer.json
 composer.lock
 phpunit.xml
-tests
+tests/
 vendor

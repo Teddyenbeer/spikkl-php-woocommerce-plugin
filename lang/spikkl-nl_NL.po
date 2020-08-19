@@ -78,3 +78,12 @@ msgstr "Onjuist huisnummer"
 
 msgid "Invalid street number suffix format"
 msgstr "Onjuiste huisnummer toevoeging"
+
+msgid "No address found"
+msgstr "Onjuiste postcode + huisnummer combinatie"
+
+msgid "Invalid postcode or street number"
+msgstr "Onjuiste postcode of huisnummer"
+
+msgid "Unknown error occurred"
+msgstr "Er is een onbekende fout opgetreden"

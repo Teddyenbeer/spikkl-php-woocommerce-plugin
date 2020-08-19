@@ -177,15 +177,15 @@ jQuery( function ( $ ) {
             let translatedMessage;
 
             if ( json.status_code === 'ZERO_RESULTS') {
-                translatedMessage = 'Onbekende postcode / huisnummer combinatie';
+                translatedMessage = spikkl_params.errors.invalid_address;
             }
 
             if ( json.status_code === 'INVALID_REQUEST' ) {
-                translatedMessage = 'Onjuiste postcode of huisnummer';
+                translatedMessage = spikkl_params.errors.invalid_postal_code_or_street_number;
             }
 
-            if ( json.status === 'UNAVAILABLE' || json.status === 'ACCESS_RESTRICTED' ) {
-                translatedMessage = 'Er is een onbekende fout opgetreden.';
+            if ( json.status_code === 'UNAVAILABLE' || json.status_code === 'ACCESS_RESTRICTED' ) {
+                translatedMessage = spikkl_params.errors.unknown_error;
 
                 this.releaseFieldsLock();
             }

@@ -3,7 +3,7 @@
 </p>
 <h1 align="center">Spikkl address lookup plugin for WooCommerce</h1>
 
-The Spikkl Address Lookup plugin incorporates the [Spikkl API](https://www.spikkl.nl/documentation) on your [Wordpress](https://wordpress.org) [WooCommerce](https://woocommerce.com) checkout page.
+The Spikkl Address Lookup plugin incorporates the [Spikkl Postcode API](https://www.spikkl.nl/documentation) on your [Wordpress](https://wordpress.org) [WooCommerce](https://woocommerce.com) checkout page.
 
 [![Build Status](https://travis-ci.org/spikkl/spikkl-php-woocommerce-plugin.png)](https://travis-ci.org/spikkl/spikkl-php-woocommerce-plugin)
 
@@ -23,7 +23,7 @@ If you like to install the plugin manually, download the latest release of the S
 ### Configure ###
 The configuration settings for the Spikkl Address Lookup plugin can be accessed from the **Address Lookup** page in the **Settings** menu or via the **Settings** link in the plugin overview.
 
-In order to add address validation to the checkout process, an API key need to be provided and the plugin needs to be enabled.
+In order to add address validation to the checkout process, an API key is required, and the plugin needs to be enabled.
 
 ## License
 
@@ -33,4 +33,4 @@ In order to add address validation to the checkout process, an API key need to b
 
 Contact: [www.spikkl.nl](https://www.spikkl.nl) — support@spikkl.nl
 
-* [Documentation for the Spikkl API](https://www.spikkl.nl/documentation/)
+* [Documentation for the Spikkl Postcode API](https://www.spikkl.nl/documentation/)

@@ -1,14 +1,14 @@
 === Spikkl Address Lookup ===
 Contributors: Spikkl
-Tags: postcode, address validation, checkout, billing, shipping, address, address verification, lookup
+Tags: postcode, address validation, checkout, billing, shipping, address, address verification, lookup, postcode api, online service
 Requires at least: 4.4
-Tested up to: 5.4
+Tested up to: 5.5
 Stable tag: trunk
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Spikkl Address Lookup validates the postcode and street number combination during checkout and fills additional address values automatically.
+Spikkl Address Lookup validates the Dutch postcode and street number combination during checkout and fills additional address values automatically. Increase the ease-of-use for each of your customers and be assured of up-to-date and valid address data.
 
 == Installation ==
 The easiest way to install the Spikkl Address Lookup plugin is via the plugin menu. Click the 'Add new' button and search for the 'Spikkl Address Lookup' plugin in the search field. Once you found the plugin, click 'Install Now', and Wordpress will take if from there.
@@ -38,12 +38,12 @@ The plugin requires you to register at [Spikkl](https://www.spikkl.nl/signup) wh
 
 = Support =
 If you have questions or issues with the Wordpress Spikkl Address Lookup Plugin then the visit
-the Spikkl [documentation](https://www.spikkl.nl/documentation) or the Spikkl [plugin page](https://www.spikkl.nl/sdks/wordpress). Or you can email us at [support@spikkl.nl](mailto:support@spikkl.nl).
+the Spikkl [documentation](https://www.spikkl.nl/documentation) or the Spikkl [plugin page](https://www.spikkl.nl/modules/wordpress). Or you can email us at [support@spikkl.nl](mailto:support@spikkl.nl).
 
 == Frequently Asked Questions ==
 
 = Do I need a Spikkl account to use this plugin? =
-Yes, you will need a Spikkl account in order to obtain your API key. Once registered you will use the Spikkl API with 100 free requests per month.
+Yes, you will need a Spikkl account in order to obtain your API key. Once registered, you will use the Spikkl API with 100 free requests per month.
 
 = Which countries are supported currently? =
 For now, only the Netherlands is supported for the checkout form. Customers from other countries will still be able to checkout, but their address will not be validated.
@@ -53,9 +53,15 @@ The Spikkl Address Lookup plugin is tested for WooCommerce version starting from
 
 == Screenshots ==
 
-1. Simple settings interface to add your Spikkl API key.
+1. Install the Spikkl Address Lookup using the Wordpress plugin repository.
+2. Simple settings interface to add your Spikkl API key.
 
 == Changelog ==
 
 = 1.0.0 =
 * Initial Release;
+
+= 1.1.0 =
+* Update translations for some error messages during checkout
+* Improved error handling during checkout
+* Minor style change to align some address fields properly
