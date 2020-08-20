@@ -9,14 +9,14 @@
  *  @wordpress-plugin
  *  Plugin Name: Spikkl Address Lookup
  *  Plugin URI: https://www.spikkl.nl/modules
- *  Description: Automatically validates the postcode and street number in the checkout form and fills in additional address data.
- *  Version: 1.0.0
+ *  Description: Spikkl Address Lookup validates the Dutch postcode and street number combination during checkout and fills additional address values automatically. Increase the ease-of-use for each of your customers and be assured of up-to-date and valid address data.
+ *  Version: 1.1.1
  *  Author: Spikkl
  *  Author URI: https://www.spikkl.nl/
  *  Text Domain: spikkl
  *  Domain Path: /lang
  *  Requires at least: 4.4
- *  Tested up to: 5.4
+ *  Tested up to: 5.5
  *  WC requires at least: 3.1.0
  *  WC tested up to: 4.0
  *  Requires PHP: 5.6
@@ -41,7 +41,7 @@ if ( ! class_exists('Spikkl' ) ) {
 
     final class Spikkl {
 
-        public static $version = '1.0.0';
+        public static $version = '1.1.1';
 
         protected static $_instance;
 
