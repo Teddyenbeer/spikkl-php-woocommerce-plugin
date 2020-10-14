@@ -21,8 +21,6 @@ if ( ! class_exists( 'Spikkl_Settings' ) ) {
 
         public $is_enabled = '0';
 
-        public $validate_referrer = '0';
-
         protected static $_instance;
 
         public function __construct() {
@@ -30,10 +28,6 @@ if ( ! class_exists( 'Spikkl_Settings' ) ) {
 
             if ( isset( $current_settings[ 'is_enabled' ] ) ) {
                 $this->is_enabled = $current_settings[ 'is_enabled' ];
-            }
-
-            if ( isset( $current_settings[ 'validate_referrer' ] ) ) {
-                $this->validate_referrer = $current_settings[ 'validate_referrer' ];
             }
 
             if ( isset ( $current_settings[ 'api_key' ] ) ) {
@@ -59,10 +53,6 @@ if ( ! class_exists( 'Spikkl_Settings' ) ) {
 
         public function is_enabled() {
             return (bool) $this->is_enabled;
-        }
-
-        public function validate_referrer() {
-            return (bool) $this->validate_referrer;
         }
     }
 }

@@ -50,23 +50,6 @@
                     </td>
                 </tr>
 
-                <tr class="option-lookup-enabled">
-                    <th scope="row"><?php _e( 'Security settings', 'spikkl' ); ?></th>
-                    <td>
-                        <fieldset>
-                            <legend class="screen-reader-text">
-                                <span><?php _e( 'Security settings', 'spikkl' ); ?></span>
-                            </legend>
-                            <label for="spikkl_settings_validate_referrer">
-                                <input name="spikkl_settings[validate_referrer]" type="checkbox" id="spikkl_settings_validate_referrer" value="1" <?php checked( true, $this->_settings->validate_referrer() ); ?> >
-                                <span><?php _e( 'Validate referrer', 'spikkl' ); ?></span>
-                            </label>
-                            <br>
-                            <p class="description"><?php vprintf( __( 'Enable site domain validation of each request. Additional restrictions of the referrer need to be configured on the <a href="%s" target="_blank">Spikkl credentials page</a>.', 'spikkl' ), array( 'https://www.spikkl.nl/account/credentials' )); ?></p>
-                        </fieldset>
-                    </td>
-                </tr>
-
             </tbody>
         </table>
 

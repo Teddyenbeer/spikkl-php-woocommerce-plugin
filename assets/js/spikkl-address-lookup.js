@@ -34,7 +34,6 @@ jQuery( function ( $ ) {
 
             this.reorderFields( selectedCountryCode );
             this.listen( selectedCountryCode );
-            this.applyFieldsLock();
         });
 
         this.$country.trigger( 'change' );
@@ -50,6 +49,9 @@ jQuery( function ( $ ) {
                 $( el ).on( 'blur', this.performLookup.bind(this) );
 
             });
+
+			this.applyFieldsLock();
+
         } else {
             $.each( interactionElements, ( index, el ) => {
                 el.off( 'keyup' );
@@ -66,7 +68,7 @@ jQuery( function ( $ ) {
         this.$postcode.attr( 'maxlength', 7 );
 
         this.$street.attr( 'disabled', true );
-        this.$city.attr( 'disabled', true );
+        this.$city.prop( 'disabled', true );
         this.$state.attr( 'disabled', true );
     };
 
@@ -77,6 +79,8 @@ jQuery( function ( $ ) {
         this.$street.removeAttr( 'disabled' );
         this.$city.removeAttr( 'disabled'  );
         this.$state.removeAttr( 'disabled' );
+
+		console.log(this.$city.prop( 'disabled', false ));
     };
 
     LookupHandler.prototype.softResetFields = function () {
@@ -310,17 +314,21 @@ jQuery( function ( $ ) {
         return spikkl_params.supported_countries.indexOf( selectedCountryCode ) >= 0;
     };
 
-    /**
-     * Init LookupHandler when billing fields are set.
-     */
-    if ( typeof spikkl_billing_fields !== 'undefined' ) {
-        new LookupHandler( spikkl_billing_fields );
-    }
 
-    /**
-     * Init LookupHandler when billing fields are set.
-     */
-    if ( typeof spikkl_shipping_fields !== 'undefined' ) {
-        new LookupHandler( spikkl_shipping_fields );
-    }
+	$( document.body ).bind('wc_address_i18n_ready', function () {
+		/**
+		 * Init LookupHandler when billing fields are set.
+		 */
+		if ( typeof spikkl_billing_fields !== 'undefined' ) {
+			new LookupHandler( spikkl_billing_fields );
+		}
+
+		/**
+		 * Init LookupHandler when billing fields are set.
+		 */
+		if ( typeof spikkl_shipping_fields !== 'undefined' ) {
+			new LookupHandler( spikkl_shipping_fields );
+		}
+	});
+
 });

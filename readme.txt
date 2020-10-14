@@ -3,7 +3,7 @@ Contributors: Spikkl
 Tags: postcode, address validation, checkout, billing, shipping, address, address verification, lookup, postcode api, online service
 Requires at least: 4.4
 Tested up to: 5.5
-Stable tag: 1.1.1
+Stable tag: 1.3.0
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -55,6 +55,7 @@ The Spikkl Address Lookup plugin is tested for WooCommerce version starting from
 
 1. Install the Spikkl Address Lookup using the Wordpress plugin repository.
 2. Simple settings interface to add your Spikkl API key.
+3. Checkout page with default WooCommerce template.
 
 == Changelog ==
 
@@ -68,3 +69,7 @@ The Spikkl Address Lookup plugin is tested for WooCommerce version starting from
 
 = 1.1.1 =
 * Unify release information
+
+= 1.3.0 =
+* Remove disabled property from input fields when changing country during checkout
+* Validate referrer by default and remove administrator setting

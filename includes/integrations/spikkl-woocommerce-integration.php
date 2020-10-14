@@ -98,7 +98,9 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 return;
             }
 
-            $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+            $suffix = '';
+
+            //$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
             wp_register_script( 'spikkl_address_lookup', plugins_url( '/assets/js/spikkl-address-lookup' . $suffix . '.js', SPIKKL_PLUGIN_FILE ), array( 'jquery', 'woocommerce' ) );
 
@@ -130,8 +132,6 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 return $fields;
             }
 
-            $fields['address_2']['class'][] = 'form-row-first';
-
             $fields['address_3'] = array(
                 'label'        => __( 'Street number suffix', 'woocommerce' ),
                 'required'     => false,
@@ -157,19 +157,22 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                     'priority' => 40
                 ),
                 'address_2' => array(
+                    'class' => array( 'form-row-first' ),
                     'priority' => 50,
                     'placeholder' => '',
                     'required' => true
                 ),
                 'address_3' => array(
-                    'priority' => 55,
+                    'priority' => 55
                 ),
                 'address_1' => array(
                     'priority' => 70,
-                    'placeholder' => ''
+                    'placeholder' => '',
+                    'required' => true
                 ),
                 'city' => array(
-                    'priority' => 80
+                    'priority' => 80,
+                    'required' => true
                 ),
                 'state' => array(
                     'priority' => 90,
@@ -181,9 +184,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         }
 
         public function perform_lookup() {
-            if ( $this->_settings->validate_referrer() ) {
-                $this->validate_referrer();
-            }
+            $this->validate_referrer();
 
             if ( empty( $_GET[ 'postal_code' ] ) || empty( $_GET[ 'street_number' ] ) ) {
                 $this->error_occurred( 'INVALID_REQUEST' );
@@ -232,7 +233,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 'headers' => $headers
             ));
 
-            if ($response instanceof WP_Error || ! in_array( $response[ 'response' ][ 'code' ], [ 200, 400 ], true ) ) {
+            if ($response instanceof WP_Error || ! in_array( $response[ 'response' ][ 'code' ], [ 200, 404 ], true ) ) {
                 $this->error_occurred( 'UNAVAILABLE' );
             } else {
                 echo $response[ 'body' ];
