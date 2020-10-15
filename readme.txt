@@ -1,9 +1,9 @@
 === Spikkl Address Lookup ===
 Contributors: Spikkl
-Tags: postcode, address validation, checkout, billing, shipping, address, address verification, lookup, postcode api, online service
+Tags: postcode, address validation, checkout, billing, shipping, address, address verification, lookup, postcode api, online service, postcode check, woocommerce
 Requires at least: 4.4
 Tested up to: 5.5
-Stable tag: 1.3.0
+Stable tag: 1.3.2
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -73,3 +73,6 @@ The Spikkl Address Lookup plugin is tested for WooCommerce version starting from
 = 1.3.0 =
 * Remove disabled property from input fields when changing country during checkout
 * Validate referrer by default and remove administrator setting
+
+= 1.3.2 =
+* Minor changes in Readme.txt

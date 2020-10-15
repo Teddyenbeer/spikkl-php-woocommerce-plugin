@@ -10,7 +10,7 @@
  *  Plugin Name: Spikkl Address Lookup
  *  Plugin URI: https://www.spikkl.nl/modules
  *  Description: Spikkl Address Lookup validates the Dutch postcode and street number combination during checkout and fills additional address values automatically. Increase the ease-of-use for each of your customers and be assured of up-to-date and valid address data.
- *  Version: 1.3.0
+ *  Version: 1.3.2
  *  Author: Spikkl
  *  Author URI: https://www.spikkl.nl/
  *  Text Domain: spikkl
