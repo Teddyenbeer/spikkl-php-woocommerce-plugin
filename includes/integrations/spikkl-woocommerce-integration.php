@@ -133,7 +133,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             }
 
             $fields['address_3'] = array(
-                'label'        => __( 'Street number suffix', 'woocommerce' ),
+                'label'        => __( 'Street number suffix', 'spikkl' ),
                 'required'     => false,
                 'type'         => 'text',
                 'class'        => array( 'form-row-last' ),
@@ -158,6 +158,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 ),
                 'address_2' => array(
                     'class' => array( 'form-row-first' ),
+                    'label' => __( 'Street number', 'spikkl' ),
                     'priority' => 50,
                     'placeholder' => '',
                     'required' => true
@@ -166,6 +167,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                     'priority' => 55
                 ),
                 'address_1' => array(
+                    'label' => __( 'Street name', 'spikkl' ),
                     'priority' => 70,
                     'placeholder' => '',
                     'required' => true

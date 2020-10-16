@@ -76,3 +76,6 @@ The Spikkl Address Lookup plugin is tested for WooCommerce version starting from
 
 = 1.3.2 =
 * Minor changes in Readme.txt
+
+= 1.4.0 =
+* Load proper translation file when selecting Dutch

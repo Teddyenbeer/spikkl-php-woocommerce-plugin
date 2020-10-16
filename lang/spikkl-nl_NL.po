@@ -70,6 +70,15 @@ msgid "Enable site domain validation of each request. Additional restrictions of
 msgstr "Site domein validatie per aanvraag. Aanvulende estricties bij de oorsprong van de aanvraag kan aangepast worden op <a href="%s" target="_blank">Spikkl API key pagina</a>."
 
 #: includes/integrations/spikkl-woocommerce-integration.php
+msgid "Street number"
+msgstr "Huisnummer"
+
+msgid "Street number suffix"
+msgstr "Toevoeging"
+
+msgid "Street name"
+msgstr "Straatnaam"
+
 msgid "Invalid postcode format"
 msgstr "Onjuiste postcode"
 
