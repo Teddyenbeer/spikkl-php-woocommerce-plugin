@@ -98,9 +98,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 return;
             }
 
-            $suffix = '';
-
-            //$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+            $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
             wp_register_script( 'spikkl_address_lookup', plugins_url( '/assets/js/spikkl-address-lookup' . $suffix . '.js', SPIKKL_PLUGIN_FILE ), array( 'jquery', 'woocommerce' ) );
 
@@ -178,7 +176,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 ),
                 'state' => array(
                     'priority' => 90,
-                    'required' => true
+                    'required' => false
                 )
             );
 

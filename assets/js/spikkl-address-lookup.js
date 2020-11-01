@@ -18,13 +18,21 @@ jQuery( function ( $ ) {
 
         this.prefix = fields.prefix;
 
-        this.$country = $( fields.country );
-        this.$state = $( fields.state );
-        this.$city = $( fields.city );
-        this.$street = $( fields.street );
-        this.$postcode = $( fields.postcode );
-        this.$streetNumber = $( fields.street_number );
-        this.$streetNumberSuffix = $( fields.street_number_suffix );
+		this.$countryField = $( fields.country + '_field' );
+		this.$stateField = $( fields.state + '_field' );
+		this.$cityField = $( fields.city + '_field' );
+		this.$streetField = $( fields.street + '_field' );
+		this.$postcodeField = $( fields.postcode + '_field' );
+		this.$streetNumberField = $( fields.street_number + '_field' );
+		this.$streetNumberSuffixField = $( fields.street_number_suffix + '_field' );
+
+        this.$country = this.$countryField.find( ':input' );
+        this.$state = this.$stateField.find( ':input' );
+        this.$city = this.$cityField.find( ':input' );
+        this.$street = this.$streetField.find( ':input' );
+        this.$postcode = this.$postcodeField.find( ':input' );
+        this.$streetNumber = this.$streetNumberField.find( ':input' );
+        this.$streetNumberSuffix = this.$streetNumberSuffixField.find( ':input' );
 
         this.setHelperElements();
 
@@ -67,20 +75,22 @@ jQuery( function ( $ ) {
         this.$postcode.attr( 'autocomplete', 'off' );
         this.$postcode.attr( 'maxlength', 7 );
 
-        this.$street.attr( 'disabled', true );
-        this.$city.prop( 'disabled', true );
-        this.$state.attr( 'disabled', true );
+        this.$street.attr( 'readonly', true );
+        this.$city.attr( 'readonly', true );
+        this.$state.attr( 'readonly', true );
+
+        this.$stateField.addClass( 'spikkl-hidden' );
     };
 
     LookupHandler.prototype.releaseFieldsLock = function () {
         this.$postcode.removeAttr( 'autocomplete' );
         this.$postcode.removeAttr( 'maxlength' );
 
-        this.$street.removeAttr( 'disabled' );
-        this.$city.removeAttr( 'disabled'  );
-        this.$state.removeAttr( 'disabled' );
+        this.$street.removeAttr( 'readonly' );
+        this.$city.removeAttr( 'readonly'  );
+        this.$state.removeAttr( 'readonly' );
 
-		console.log(this.$city.prop( 'disabled', false ));
+		this.$stateField.removeClass( 'spikkl-hidden' );
     };
 
     LookupHandler.prototype.softResetFields = function () {

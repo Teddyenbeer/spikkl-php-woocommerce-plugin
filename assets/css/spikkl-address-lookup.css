@@ -5,6 +5,11 @@
     display: block;
 }
 
+.spikkl-hidden {
+    visibility: hidden !important;
+    display: none !important;
+}
+
 .spikkl-loader,
 .spikkl-loader:after {
     border-radius: 50%;
