@@ -79,3 +79,6 @@ The Spikkl Address Lookup plugin is tested for WooCommerce version starting from
 
 = 1.4.0 =
 * Load proper translation file when selecting Dutch
+
+= 1.4.1 =
+* Remove disabled fields and hide state fields for The Netherlands
