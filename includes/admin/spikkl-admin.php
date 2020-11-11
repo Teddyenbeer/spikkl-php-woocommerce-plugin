@@ -27,7 +27,7 @@ if ( ! class_exists( 'Spikkl_Admin' ) ) {
             add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
             add_action( 'admin_init', array( $this, 'init_page' ) );
 
-            add_action( 'plugin_action_links_' . plugin_basename( SPIKKL_PLUGIN_FILE ) , array( $this, 'add_plugin_link' ) );
+            add_filter( 'plugin_action_links_' . plugin_basename( SPIKKL_PLUGIN_FILE ) , array( $this, 'add_plugin_action_link' ) );
         }
 
         public static function instance() {
@@ -71,12 +71,14 @@ if ( ! class_exists( 'Spikkl_Admin' ) ) {
             );
         }
 
-        public function add_plugin_link( $links ) {
-            $links = array_merge( array(
-                '<a href="' . esc_url( menu_page_url( 'spikkl_address_lookup_options' ) ) . '">' . __( 'Settings', 'spikkl' ) . '</a>'
-            ), $links );
+        public function add_plugin_action_link( $actions ) {
+            $additionalActions = array(
+                '<a href="' . menu_page_url( 'spikkl_address_lookup_options', false ) . '">' . __( 'Settings', 'spikkl' ) . '</a>'
+            );
 
-            return $links;
+            $actions = array_merge( $actions, $additionalActions );
+
+            return $actions;
         }
 
         public function create_admin_page() {

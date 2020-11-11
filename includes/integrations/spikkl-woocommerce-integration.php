@@ -40,7 +40,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             'city' => '#shipping_city',
             'state' => '#shipping_state',
             'postcode' => '#shipping_postcode',
-            'street_name' => '#shipping_address_1',
+            'street' => '#shipping_address_1',
             'street_number' => '#shipping_address_2',
             'street_number_suffix' => '#shipping_address_3',
         );

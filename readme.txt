@@ -82,3 +82,7 @@ The Spikkl Address Lookup plugin is tested for WooCommerce version starting from
 
 = 1.4.1 =
 * Remove disabled fields and hide state fields for The Netherlands
+
+= 1.4.2 =
+* Fix auto fill for street name in shipping address
+* Remove settings page URL from plugin page
