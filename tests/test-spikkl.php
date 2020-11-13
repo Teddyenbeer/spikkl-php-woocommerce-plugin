@@ -95,7 +95,6 @@ class Spikkl_Test extends WP_UnitTestCase
         $this->assertArrayHasKey( 'postcode', $actual[ 'NL' ] );
         $this->assertArrayHasKey( 'address_1', $actual[ 'NL' ] );
         $this->assertArrayHasKey( 'address_2', $actual[ 'NL' ] );
-        $this->assertArrayHasKey( 'address_3', $actual[ 'NL' ] );
         $this->assertArrayHasKey( 'city', $actual[ 'NL' ] );
         $this->assertArrayHasKey( 'state', $actual[ 'NL' ] );
     }
