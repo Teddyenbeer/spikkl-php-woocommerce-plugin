@@ -4,19 +4,19 @@
 /* global spikkl_shipping_fields */
 jQuery( function ( $ ) {
 
-    if ( typeof spikkl_params === 'undefined' ) {
-        return false;
-    }
+	if ( typeof spikkl_params === 'undefined' ) {
+		return false;
+	}
 
-    const DUTCH_POSTCODE_REGEX = new RegExp('');
-    const DUTCH_STREET_NUMBER_REGEX = new RegExp('');
-    const DUTCH_STREET_NUMBER_SUFFIX_REGEX = new RegExp('');
+	const DUTCH_POSTCODE_REGEX = new RegExp('^[1-9][0-9]{3}\\s*(?!sa|sd|ss)[a-z]{2}$', 'i');
+	const DUTCH_STREET_NUMBER_REGEX = new RegExp('^[0-9]{1,5}$');
+	const DUTCH_STREET_NUMBER_SUFFIX_REGEX = new RegExp('^(?:[a-z])?\\s?(?:[a-z0-9]{1,4})?$', 'i');
 
-    const LookupHandler = function ( fields ) {
-        this.cache = {};
-        this.lookupTimeout = null;
+	const LookupHandler = function ( fields ) {
+		this.cache = {};
+		this.lookupTimeout = null;
 
-        this.prefix = fields.prefix;
+		this.prefix = fields.prefix;
 
 		this.$countryField = $( fields.country + '_field' );
 		this.$stateField = $( fields.state + '_field' );
@@ -26,303 +26,307 @@ jQuery( function ( $ ) {
 		this.$streetNumberField = $( fields.street_number + '_field' );
 		this.$streetNumberSuffixField = $( fields.street_number_suffix + '_field' );
 
-        this.$country = this.$countryField.find( ':input' );
-        this.$state = this.$stateField.find( ':input' );
-        this.$city = this.$cityField.find( ':input' );
-        this.$street = this.$streetField.find( ':input' );
-        this.$postcode = this.$postcodeField.find( ':input' );
-        this.$streetNumber = this.$streetNumberField.find( ':input' );
-        this.$streetNumberSuffix = this.$streetNumberSuffixField.find( ':input' );
+		this.$country = this.$countryField.find( ':input' );
+		this.$state = this.$stateField.find( ':input' );
+		this.$city = this.$cityField.find( ':input' );
+		this.$street = this.$streetField.find( ':input' );
+		this.$postcode = this.$postcodeField.find( ':input' );
+		this.$streetNumber = this.$streetNumberField.find( ':input' );
+		this.$streetNumberSuffix = this.$streetNumberSuffixField.find( ':input' );
 
-        this.setHelperElements();
+		this.setHelperElements();
 
-        this.$country.on( 'change', () => {
+		this.$country.on( 'change', () => {
 
-            let selectedCountryCode = this.getSelectedCountryCode();
+			let selectedCountryCode = this.getSelectedCountryCode();
 
-            this.reorderFields( selectedCountryCode );
-            this.listen( selectedCountryCode );
-        });
+			this.reorderFields( selectedCountryCode );
+			this.listen( selectedCountryCode );
+		});
 
-        this.$country.trigger( 'change' );
-    };
+		this.$country.trigger( 'change' );
+	};
 
-    LookupHandler.prototype.listen = function ( selectedCountryCode ) {
-        const interactionElements = [ this.$postcode, this.$streetNumber, this.$streetNumberSuffix ];
+	LookupHandler.prototype.listen = function ( selectedCountryCode ) {
+		const interactionElements = [ this.$postcode, this.$streetNumber, this.$streetNumberSuffix ];
 
-        if ( this.isCountryEligibleForLookup( selectedCountryCode ) ) {
-            $.each( interactionElements, ( index, el ) => {
+		if ( this.isCountryEligibleForLookup( selectedCountryCode ) ) {
+			$.each( interactionElements, ( index, el ) => {
 
-                $( el ).on( 'keyup', this.delayedLookup.bind(this) );
-                $( el ).on( 'blur', this.performLookup.bind(this) );
+				$( el ).on( 'keyup', this.delayedLookup.bind(this) );
+				$( el ).on( 'blur', this.performLookup.bind(this) );
 
-            });
+			});
 
 			this.applyFieldsLock();
 
-        } else {
-            $.each( interactionElements, ( index, el ) => {
-                el.off( 'keyup' );
-                el.off( 'blur' );
-            });
+		} else {
+			$.each( interactionElements, ( index, el ) => {
+				el.off( 'keyup' );
+				el.off( 'blur' );
+			});
 
-            this.hardResetFields();
-            this.releaseFieldsLock();
-        }
-    };
+			this.hardResetFields();
+			this.releaseFieldsLock();
+		}
+	};
 
-    LookupHandler.prototype.applyFieldsLock = function () {
-        this.$postcode.attr( 'autocomplete', 'off' );
-        this.$postcode.attr( 'maxlength', 7 );
+	LookupHandler.prototype.applyFieldsLock = function () {
+		this.$postcode.attr( 'autocomplete', 'off' );
+		this.$postcode.attr( 'maxlength', 7 );
 
-        this.$street.attr( 'readonly', true );
-        this.$city.attr( 'readonly', true );
-        this.$state.attr( 'readonly', true );
+		this.$street.attr( 'readonly', true );
+		this.$city.attr( 'readonly', true );
+		this.$state.attr( 'readonly', true );
 
-        this.$stateField.addClass( 'spikkl-hidden' );
-    };
+		this.$stateField.addClass( 'spikkl-hidden' );
+	};
 
-    LookupHandler.prototype.releaseFieldsLock = function () {
-        this.$postcode.removeAttr( 'autocomplete' );
-        this.$postcode.removeAttr( 'maxlength' );
+	LookupHandler.prototype.releaseFieldsLock = function () {
+		this.$postcode.removeAttr( 'autocomplete' );
+		this.$postcode.removeAttr( 'maxlength' );
 
-        this.$street.removeAttr( 'readonly' );
-        this.$city.removeAttr( 'readonly'  );
-        this.$state.removeAttr( 'readonly' );
+		this.$street.removeAttr( 'readonly' );
+		this.$city.removeAttr( 'readonly'  );
+		this.$state.removeAttr( 'readonly' );
 
 		this.$stateField.removeClass( 'spikkl-hidden' );
-    };
+	};
 
-    LookupHandler.prototype.softResetFields = function () {
-        this.$street.val( '' );
-        this.$city.val( '' );
-        this.$state.val( '' ).trigger( 'change' );
+	LookupHandler.prototype.softResetFields = function () {
+		this.$street.val( '' );
+		this.$city.val( '' );
+		this.$state.val( '' ).trigger( 'change' );
 
-        if ( typeof this.$spinner !== 'undefined' ) {
-            this.$spinner.hide();
-        }
-    };
+		if ( typeof this.$spinner !== 'undefined' ) {
+			this.$spinner.hide();
+		}
+	};
 
-    LookupHandler.prototype.hardResetFields = function () {
-        this.$postcode.val( '' );
-        this.$streetNumber.val( '' );
-        this.$streetNumberSuffix.val( '' );
+	LookupHandler.prototype.hardResetFields = function () {
+		this.$postcode.val( '' );
+		this.$streetNumber.val( '' );
+		this.$streetNumberSuffix.val( '' );
 
-        if ( typeof this.$message !== 'undefined' ) {
-            this.$message.hide();
-        }
+		if ( typeof this.$message !== 'undefined' ) {
+			this.$message.hide();
+		}
 
-        this.softResetFields();
-    };
+		this.softResetFields();
+	};
 
-    LookupHandler.prototype.delayedLookup = function () {
-        clearTimeout( this.lookupTimeout );
+	LookupHandler.prototype.delayedLookup = function () {
+		clearTimeout( this.lookupTimeout );
 
-        this.lookupTimeout = setTimeout( () => {
-            this.performLookup();
-        }, 350);
-    };
+		this.lookupTimeout = setTimeout( () => {
+			this.performLookup();
+		}, 350);
+	};
 
-    LookupHandler.prototype.performLookup = function () {
-        const postcode = this.$postcode.val();
-        const streetNumber = this.$streetNumber.val();
-        const streetNumberSuffix = this.$streetNumberSuffix.val();
+	LookupHandler.prototype.performLookup = function () {
+		const postcode = this.$postcode.val();
+		const streetNumber = this.$streetNumber.val();
+		const streetNumberSuffix = this.$streetNumberSuffix.val();
 
-        if ( ! this.isValidPostcode() || ! this.isValidStreetNumber() || ! this.isValidStreetNumberSuffix() ) {
-            this.softResetFields();
-        } else {
-            this.$spinner.show();
-            this.$message.hide();
+		if ( ! this.isValidPostcode() || ! this.isValidStreetNumber() || ! this.isValidStreetNumberSuffix() ) {
+			this.softResetFields();
+		} else {
+			this.$spinner.show();
+			this.$message.hide();
 
-            const params = {
-                action: spikkl_params.action,
-                postal_code: encodeURIComponent( postcode ),
-                street_number: encodeURIComponent( streetNumber ),
-                street_number_suffix: encodeURIComponent( streetNumberSuffix ),
-            };
+			const params = {
+				action: spikkl_params.action,
+				postal_code: encodeURIComponent( postcode ),
+				street_number: encodeURIComponent( streetNumber ),
+				street_number_suffix: encodeURIComponent( streetNumberSuffix ),
+			};
 
-            this.cachedGet( params );
-        }
-    };
+			this.cachedGet( params );
+		}
+	};
 
-    LookupHandler.prototype.cachedGet = function ( params ) {
+	LookupHandler.prototype.cachedGet = function ( params ) {
 
-        const cacheKey = spikkl_params.url + JSON.stringify( Object.values( params ) );
+		const cacheKey = spikkl_params.url + JSON.stringify( Object.values( params ) );
 
-        if ( this.cache.hasOwnProperty( cacheKey ) ) {
-            this.fillFields( this.cache[ cacheKey ] );
-        } else {
-            $.ajax({
-                crossDomain: true,
-                type: 'GET',
-                dataType: 'json',
-                timeout: 5 * 1000,
-                url: spikkl_params.url,
-                data: params,
+		if ( this.cache.hasOwnProperty( cacheKey ) ) {
+			this.fillFields( this.cache[ cacheKey ] );
+		} else {
+			$.ajax({
+				crossDomain: true,
+				type: 'GET',
+				dataType: 'json',
+				timeout: 5 * 1000,
+				url: spikkl_params.url,
+				data: params,
 
-                success: ( data, textStatus ) => {
-                    if ( ! data || textStatus !== 'success' ) {
-                        this.fillFields( {
-                            status: 'failed',
-                            status_code: 'UNAVAILABLE'
-                        } );
+				success: ( data, textStatus ) => {
+					if ( ! data || textStatus !== 'success' ) {
+						this.fillFields( {
+							status: 'failed',
+							status_code: 'UNAVAILABLE'
+						} );
 
-                        this.releaseFieldsLock();
-                        return;
-                    }
+						this.releaseFieldsLock();
+						return;
+					}
 
-                    this.cache[ cacheKey ] = data;
+					this.cache[ cacheKey ] = data;
 
-                    this.fillFields( data );
-                }
-            });
-        }
-    };
+					this.fillFields( data );
+				}
+			});
+		}
+	};
 
-    LookupHandler.prototype.fillFields = function ( json ) {
-        this.$spinner.hide();
+	LookupHandler.prototype.fillFields = function ( json ) {
+		this.$spinner.hide();
 
-        if ( json.status === 'ok' && json.results.length >= 1) {
-            this.$street.val( json.results[0].street_name );
-            this.$city.val( json.results[0].city );
+		if ( json.status === 'ok' && json.results.length >= 1) {
+			this.$postcode.val( json.results[0].postal_code );
+			this.$streetNumber.val( json.results[0].street_number );
+			this.$streetNumberSuffix.val( json.results[0].street_number_suffix );
 
-            this.$state.val( json.results[0].administrative_areas[0].abbreviation ).trigger('change');
-        } else {
-            let translatedMessage;
+			this.$street.val( json.results[0].street_name );
+			this.$city.val( json.results[0].city );
 
-            if ( json.status_code === 'ZERO_RESULTS') {
-                translatedMessage = spikkl_params.errors.invalid_address;
-            }
+			this.$state.val( json.results[0].administrative_areas[0].abbreviation ).trigger('change');
+		} else {
+			let translatedMessage;
 
-            if ( json.status_code === 'INVALID_REQUEST' ) {
-                translatedMessage = spikkl_params.errors.invalid_postal_code_or_street_number;
-            }
+			if ( json.status_code === 'ZERO_RESULTS') {
+				translatedMessage = spikkl_params.errors.invalid_address;
+			}
 
-            if ( json.status_code === 'UNAVAILABLE' || json.status_code === 'ACCESS_RESTRICTED' ) {
-                translatedMessage = spikkl_params.errors.unknown_error;
+			if ( json.status_code === 'INVALID_REQUEST' ) {
+				translatedMessage = spikkl_params.errors.invalid_postal_code_or_street_number;
+			}
 
-                this.releaseFieldsLock();
-            }
+			if ( json.status_code === 'UNAVAILABLE' || json.status_code === 'ACCESS_RESTRICTED' ) {
+				translatedMessage = spikkl_params.errors.unknown_error;
 
-            this.softResetFields();
+				this.releaseFieldsLock();
+			}
 
-            this.$message.empty().append( '<li>' + translatedMessage + '</li>' );
-            this.$message.show();
-        }
-    };
+			this.softResetFields();
 
-    LookupHandler.prototype.isValidPostcode = function () {
-        const postcode = this.$postcode.val();
+			this.$message.empty().append( '<li>' + translatedMessage + '</li>' );
+			this.$message.show();
+		}
+	};
 
-        if ( postcode === null || postcode === '' ) {
-            return false;
-        }
+	LookupHandler.prototype.isValidPostcode = function () {
+		const postcode = this.$postcode.val();
 
-        if ( DUTCH_POSTCODE_REGEX.test( postcode ) ) {
-            return true;
-        } else {
-            this.$message.empty().append( '<li>' + spikkl_params.errors.invalid_postal_code + '</li>' );
-            this.$message.show();
-        }
+		if ( postcode === null || postcode === '' ) {
+			return false;
+		}
 
-        return false;
-    };
+		if ( DUTCH_POSTCODE_REGEX.test( postcode ) ) {
+			return true;
+		} else {
+			this.$message.empty().append( '<li>' + spikkl_params.errors.invalid_postal_code + '</li>' );
+			this.$message.show();
+		}
 
-    LookupHandler.prototype.isValidStreetNumber = function () {
-        const streetNumber = this.$streetNumber.val();
+		return false;
+	};
 
-        if ( streetNumber === null || streetNumber === '' ) {
-            return false;
-        }
+	LookupHandler.prototype.isValidStreetNumber = function () {
+		const streetNumber = this.$streetNumber.val();
 
-        if ( DUTCH_STREET_NUMBER_REGEX.test( streetNumber ) ) {
-            return true;
-        } else {
-            this.$message.empty().append( '<li>' + spikkl_params.errors.invalid_street_number + '</li>' );
-            this.$message.show();
-        }
+		if ( streetNumber === null || streetNumber === '' ) {
+			return false;
+		}
 
-        return false;
-    };
+		if ( DUTCH_STREET_NUMBER_REGEX.test( streetNumber ) ) {
+			return true;
+		} else {
+			this.$message.empty().append( '<li>' + spikkl_params.errors.invalid_street_number + '</li>' );
+			this.$message.show();
+		}
 
-    LookupHandler.prototype.isValidStreetNumberSuffix = function () {
-        const streetNumberSuffix = this.$streetNumberSuffix.val();
+		return false;
+	};
+
+	LookupHandler.prototype.isValidStreetNumberSuffix = function () {
+		const streetNumberSuffix = this.$streetNumberSuffix.val();
 
 
-        if ( DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix ) ) {
-            return true;
-        } else {
-            this.$message.empty().append( '<li>' + spikkl_params.errors.invalid_street_number_suffix + '</li>' );
-            this.$message.show();
-        }
+		if ( DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix ) ) {
+			return true;
+		} else {
+			this.$message.empty().append( '<li>' + spikkl_params.errors.invalid_street_number_suffix + '</li>' );
+			this.$message.show();
+		}
 
-        return false;
-    };
+		return false;
+	};
 
-    LookupHandler.prototype.setHelperElements = function () {
-        this.$spinner = $( '<div>', {
-            id: 'spikkl-' + this.prefix + '-spinner',
-            class: 'spikkl-loader',
-            style: 'display:none;'
-        });
+	LookupHandler.prototype.setHelperElements = function () {
+		this.$spinner = $( '<div>', {
+			id: 'spikkl-' + this.prefix + '-spinner',
+			class: 'spikkl-loader',
+			style: 'display:none;'
+		});
 
-        this.$message = $( '<ul>', {
-            id: 'spikkl-' + this.prefix + '-message',
-            class: 'woocommerce-error',
-            style: 'display:none;'
-        });
+		this.$message = $( '<ul>', {
+			id: 'spikkl-' + this.prefix + '-message',
+			class: 'woocommerce-error',
+			style: 'display:none;'
+		});
 
-        this.$postcode.after( this.$spinner );
-        this.$postcode.before( this.$message );
-    };
+		this.$postcode.after( this.$spinner );
+		this.$postcode.before( this.$message );
+	};
 
-    LookupHandler.prototype.reorderFields = function ( selectedCountryCode ) {
-        const $streetNumberContainer = this.$streetNumber.closest( 'p.form-row' );
-        const $streetNumberSuffixContainer = this.$streetNumberSuffix.closest( 'p.form-row' );
+	LookupHandler.prototype.reorderFields = function ( selectedCountryCode ) {
+		const $streetNumberContainer = this.$streetNumber.closest( 'p.form-row' );
+		const $streetNumberSuffixContainer = this.$streetNumberSuffix.closest( 'p.form-row' );
 
-        if ( this.isCountryEligibleForLookup( selectedCountryCode ) ) {
+		if ( this.isCountryEligibleForLookup( selectedCountryCode ) ) {
 
-            this.createStreetNumberLabel();
+			this.createStreetNumberLabel();
 
-            $streetNumberContainer
-                .removeClass( 'form-row-wide' )
-                .addClass( 'form-row-first' );
+			$streetNumberContainer
+				.removeClass( 'form-row-wide' )
+				.addClass( 'form-row-first' );
 
-            $streetNumberSuffixContainer.show();
-        } else {
-            $streetNumberContainer
-                .removeClass( 'form-row-first' )
-                .addClass( 'form-row-wide' );
+			$streetNumberSuffixContainer.show();
+		} else {
+			$streetNumberContainer
+				.removeClass( 'form-row-first' )
+				.addClass( 'form-row-wide' );
 
-            $streetNumberSuffixContainer.hide();
+			$streetNumberSuffixContainer.hide();
 
-            $streetNumberContainer.find( 'label' ).remove();
-        }
-    };
+			$streetNumberContainer.find( 'label' ).remove();
+		}
+	};
 
-    LookupHandler.prototype.createStreetNumberLabel = function () {
-        const id = this.$streetNumber.attr('id');
-        const required = woocommerce_params.i18n_required_text !== 'undefined' ? woocommerce_params.i18n_required_text : 'required';
-        const tip = '<abbr title="' + required + '" class="required"> * </abbr>';
+	LookupHandler.prototype.createStreetNumberLabel = function () {
+		const id = this.$streetNumber.attr('id');
+		const required = woocommerce_params.i18n_required_text !== 'undefined' ? woocommerce_params.i18n_required_text : 'required';
+		const tip = '<abbr title="' + required + '" class="required"> * </abbr>';
 
-        const $label = $( 'label[for="' + id + '"]' );
+		const $label = $( 'label[for="' + id + '"]' );
 
-        if ( ! $label.length ) {
-            this.$streetNumber.before( '<label for="' + id + '">' + spikkl_params.street_number_label + tip + '</label>' );
-        } else if ( ! $( 'label[for="' + id  + '"] > abbr' ).length ) {
-            $label.append( tip );
-        }
-    };
+		if ( ! $label.length ) {
+			this.$streetNumber.before( '<label for="' + id + '">' + spikkl_params.street_number_label + tip + '</label>' );
+		} else if ( ! $( 'label[for="' + id  + '"] > abbr' ).length ) {
+			$label.append( tip );
+		}
+	};
 
-    LookupHandler.prototype.getSelectedCountryCode = function () {
-        return $( this.$country.selector + ' :selected' ).val().trim();
-    };
+	LookupHandler.prototype.getSelectedCountryCode = function () {
+		return $( this.$country.selector + ' :selected' ).val().trim();
+	};
 
-    LookupHandler.prototype.isCountryEligibleForLookup = function ( selectedCountryCode ) {
-        selectedCountryCode = selectedCountryCode || this.getSelectedCountryCode();
+	LookupHandler.prototype.isCountryEligibleForLookup = function ( selectedCountryCode ) {
+		selectedCountryCode = selectedCountryCode || this.getSelectedCountryCode();
 
-        return spikkl_params.supported_countries.indexOf( selectedCountryCode ) >= 0;
-    };
+		return spikkl_params.supported_countries.indexOf( selectedCountryCode ) >= 0;
+	};
 
 
 	$( document.body ).bind('wc_address_i18n_ready', function () {

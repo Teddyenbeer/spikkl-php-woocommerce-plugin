@@ -90,7 +90,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             add_action( 'wp_ajax_' . self::$_action, array( $this, 'perform_lookup' ) );
             add_action( 'wp_ajax_nopriv_' . self::$_action, array( $this, 'perform_lookup' ) );
 
-            add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ) );
+            add_action( 'woocommerce_checkout_posted_data', array( $this, 'checkout_posted_data' ) );
         }
 
         public function load_scripts() {
@@ -154,19 +154,16 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 'postcode'  => array(
                     'priority' => 40
                 ),
+                'address_1' => array(
+                    'label' => __( 'Street name', 'spikkl' ),
+                    'priority' => 70,
+                    'placeholder' => '',
+                    'required' => true
+                ),
                 'address_2' => array(
                     'class' => array( 'form-row-first' ),
                     'label' => __( 'Street number', 'spikkl' ),
                     'priority' => 50,
-                    'placeholder' => '',
-                    'required' => true
-                ),
-                'address_3' => array(
-                    'priority' => 55
-                ),
-                'address_1' => array(
-                    'label' => __( 'Street name', 'spikkl' ),
-                    'priority' => 70,
                     'placeholder' => '',
                     'required' => true
                 ),
@@ -283,20 +280,23 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             }
         }
 
-        public function after_checkout_validation( $posted ) {
+        public function checkout_posted_data( $posted ) {
             if ( ! $this->_settings->is_enabled() ) {
                 return $posted;
             }
 
             foreach ( ['billing', 'shipping' ] as $group ) {
-                $number = $group . '_address_2';
-                $suffix = $group . '_address_3';
+                $streetName = $group . '_address_1';
+                $streetNumber = $group . '_address_2';
+                $streetNumberSuffix = $group . '_address_3';
 
-                if ( isset( $posted[$suffix] ) && $posted[$suffix] ) {
-                    $posted[$number] .= $posted[$suffix];
+                $posted[$streetName] .= ' ' . $posted[$streetNumber];
+
+                if ( isset( $posted[$streetNumberSuffix] ) && $posted[$streetNumberSuffix] ) {
+                    $posted[$streetName] .= $posted[$streetNumberSuffix];
                 }
 
-                unset( $posted[$suffix] );
+                unset( $posted[$streetNumberSuffix], $posted[$streetNumber] );
             }
 
             return $posted;

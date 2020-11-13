@@ -3,7 +3,7 @@ Contributors: Spikkl
 Tags: postcode, address validation, checkout, billing, shipping, address, address verification, lookup, postcode api, online service, postcode check, woocommerce
 Requires at least: 4.4
 Tested up to: 5.5
-Stable tag: 1.3.2
+Stable tag: 1.4.3
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -34,7 +34,7 @@ The plugin requires you to register at [Spikkl](https://www.spikkl.nl/signup) wh
 = Technical features: =
 * 100% user friendly, easy to install, easy to uninstall
 * Light weight and clean code
-* Compatible with WooCommerce 3.1 - 4.0
+* Compatible with WooCommerce 3.1 - 4.4
 
 = Support =
 If you have questions or issues with the Wordpress Spikkl Address Lookup Plugin then the visit
@@ -86,3 +86,7 @@ The Spikkl Address Lookup plugin is tested for WooCommerce version starting from
 = 1.4.2 =
 * Fix auto fill for street name in shipping address
 * Remove settings page URL from plugin page
+
+= 1.4.3 =
+* Add regex to validate postal code, street number and street number suffix
+* Concat postal code, street number and street number suffix to single address line
