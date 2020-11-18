@@ -319,7 +319,7 @@ jQuery( function ( $ ) {
 	};
 
 	LookupHandler.prototype.getSelectedCountryCode = function () {
-		return $( this.$country.selector + ' :selected' ).val().trim();
+		return $( this.$country.selector ).val().trim();
 	};
 
 	LookupHandler.prototype.isCountryEligibleForLookup = function ( selectedCountryCode ) {

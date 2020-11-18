@@ -93,3 +93,6 @@ The Spikkl Address Lookup plugin is tested for WooCommerce version starting from
 
 = 1.4.4 =
 * Update country-related checkout fields test
+
+= 1.4.5 =
+* Fix country selector to support single country checkout forms
