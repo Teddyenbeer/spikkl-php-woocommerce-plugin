@@ -73,10 +73,10 @@ class Spikkl_Test extends WP_UnitTestCase
 
         $this->assertEquals( 'value', $actual['address_2']['some'] );
 
-        $this->assertArrayHasKey( 'address_3', $actual );
+        $this->assertArrayHasKey( 'address_5', $actual );
 
-        $this->assertEquals( 'Street number suffix', $actual['address_3']['label'] );
-        $this->assertEquals( array( 'form-row-last' ), $actual['address_3']['class'] );
+        $this->assertEquals( 'Street number suffix', $actual['address_5']['label'] );
+        $this->assertEquals( array( 'form-row-last' ), $actual['address_5']['class'] );
     }
 
     public function test_overwrite_country_locale() {
