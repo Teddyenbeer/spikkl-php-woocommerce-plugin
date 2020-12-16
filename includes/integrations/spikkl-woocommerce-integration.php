@@ -28,8 +28,8 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             'state' => '#billing_state',
             'postcode' => '#billing_postcode',
             'street' => '#billing_address_1',
-            'street_number' => '#billing_address_2',
-            'street_number_suffix' => '#billing_address_3',
+            'street_number' => '#billing_address_4',
+            'street_number_suffix' => '#billing_address_5',
         );
 
         private static $_shipping = array(
@@ -41,8 +41,8 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             'state' => '#shipping_state',
             'postcode' => '#shipping_postcode',
             'street' => '#shipping_address_1',
-            'street_number' => '#shipping_address_2',
-            'street_number_suffix' => '#shipping_address_3',
+            'street_number' => '#shipping_address_4',
+            'street_number_suffix' => '#shipping_address_5',
         );
 
         private static $_error_message = array(
@@ -87,10 +87,16 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             add_filter( 'woocommerce_default_address_fields', array( $this, 'override_default_address_fields' ) );
             add_filter( 'woocommerce_get_country_locale', array( $this, 'overwrite_country_locale' ) );
 
+            add_filter( 'woocommerce_data_get_shipping', array( $this, 'overwrite_shipping_address' ) );
+
+            add_filter( 'woocommerce_checkout_get_value', array( $this, 'checkout_get_value' ), 10, 2);
+
             add_action( 'wp_ajax_' . self::$_action, array( $this, 'perform_lookup' ) );
             add_action( 'wp_ajax_nopriv_' . self::$_action, array( $this, 'perform_lookup' ) );
 
             add_action( 'woocommerce_checkout_posted_data', array( $this, 'checkout_posted_data' ) );
+
+            add_action( 'woocommerce_checkout_update_order_review', array( $this, 'checkout_update_order_review' ) );
         }
 
         public function load_scripts() {
@@ -130,15 +136,23 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 return $fields;
             }
 
-            $fields['address_3'] = array(
+            $fields['address_4'] = array(
+                'label' => __( 'Street number', 'spikkl' ),
+                'required' => true,
+                'type' => 'text',
+                'class' => array( 'form-row-first' ),
+                'autocomplete' => false,
+                'priority' => 50
+            );
+
+            $fields['address_5'] = array(
                 'label'        => __( 'Street number suffix', 'spikkl' ),
                 'required'     => false,
                 'type'         => 'text',
                 'class'        => array( 'form-row-last' ),
                 'validate'     => array( 'suffix' ),
                 'autocomplete' => false,
-                'priority'     => 55,
-                'hidden'       => true
+                'priority'     => 55
             );
 
             return $fields;
@@ -161,11 +175,8 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                     'required' => true
                 ),
                 'address_2' => array(
-                    'class' => array( 'form-row-first' ),
-                    'label' => __( 'Street number', 'spikkl' ),
-                    'priority' => 50,
-                    'placeholder' => '',
-                    'required' => true
+                    'hidden' => true,
+                    'required' => false
                 ),
                 'city' => array(
                     'priority' => 80,
@@ -280,6 +291,29 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             }
         }
 
+        public function checkout_get_value( $null, $input ) {
+            if ( in_array( $input, [ 'billing_address_4', 'billing_address_5' ] ) ) {
+                return WC()->session->get("customer_" . $input);
+            }
+
+            return $null;
+        }
+
+        public function checkout_update_order_review( $posted ) {
+            $data = array();
+            $vars = explode( '&', $posted );
+            foreach ($vars as $k => $value){
+                $v = explode( '=', urldecode( $value ) );
+                $data[$v[0]] = $v[1];
+            }
+
+            foreach ( [ 'billing_address_4', 'billing_address_5' ] as $key) {
+                if ( isset( $data[$key] ) && $data[$key] ) {
+                    WC()->session->set("customer_" . $key, $data[$key]);
+                }
+            }
+        }
+
         public function checkout_posted_data( $posted ) {
             if ( ! $this->_settings->is_enabled() ) {
                 return $posted;
@@ -287,16 +321,14 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
 
             foreach ( ['billing', 'shipping' ] as $group ) {
                 $streetName = $group . '_address_1';
-                $streetNumber = $group . '_address_2';
-                $streetNumberSuffix = $group . '_address_3';
+                $streetNumber = $group . '_address_4';
+                $streetNumberSuffix = $group . '_address_5';
 
                 $posted[$streetName] .= ' ' . $posted[$streetNumber];
 
                 if ( isset( $posted[$streetNumberSuffix] ) && $posted[$streetNumberSuffix] ) {
                     $posted[$streetName] .= $posted[$streetNumberSuffix];
                 }
-
-                unset( $posted[$streetNumberSuffix], $posted[$streetNumber] );
             }
 
             return $posted;
