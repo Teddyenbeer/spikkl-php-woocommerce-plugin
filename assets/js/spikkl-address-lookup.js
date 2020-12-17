@@ -336,40 +336,12 @@ jQuery( function ( $ ) {
 	};
 
 	LookupHandler.prototype.reorderFields = function ( selectedCountryCode ) {
-		const $streetNumberContainer = this.$streetNumber.closest( 'p.form-row' );
-		const $streetNumberSuffixContainer = this.$streetNumberSuffix.closest( 'p.form-row' );
-
 		if ( this.isCountryEligibleForLookup( selectedCountryCode ) ) {
-
-			this.createStreetNumberLabel();
-
-			$streetNumberContainer
-				.removeClass( 'form-row-wide' )
-				.addClass( 'form-row-first' );
-
-			$streetNumberSuffixContainer.show();
+			this.$streetNumberField.show();
+			this.$streetNumberSuffixField.show();
 		} else {
-			$streetNumberContainer
-				.removeClass( 'form-row-first' )
-				.addClass( 'form-row-wide' );
-
-			$streetNumberSuffixContainer.hide();
-
-			$streetNumberContainer.find( 'label' ).remove();
-		}
-	};
-
-	LookupHandler.prototype.createStreetNumberLabel = function () {
-		const id = this.$streetNumber.attr('id');
-		const required = woocommerce_params.i18n_required_text !== 'undefined' ? woocommerce_params.i18n_required_text : 'required';
-		const tip = '<abbr title="' + required + '" class="required"> * </abbr>';
-
-		const $label = $( 'label[for="' + id + '"]' );
-
-		if ( ! $label.length ) {
-			this.$streetNumber.before( '<label for="' + id + '">' + spikkl_params.street_number_label + tip + '</label>' );
-		} else if ( ! $( 'label[for="' + id  + '"] > abbr' ).length ) {
-			$label.append( tip );
+			this.$streetNumberField.hide();
+			this.$streetNumberSuffixField.hide();
 		}
 	};
 
