@@ -10,10 +10,12 @@ jQuery( function ( $ ) {
 
 	const DUTCH_POSTCODE_REGEX = new RegExp('^[1-9][0-9]{3}\\s*(?!sa|sd|ss)[a-z]{2}$', 'i');
 	const DUTCH_STREET_NUMBER_REGEX = new RegExp('^[0-9]{1,5}$');
-	const DUTCH_STREET_NUMBER_SUFFIX_REGEX = new RegExp('^(?:[a-z])?\\s?(?:[a-z0-9]{1,4})?$', 'i');
+	const DUTCH_STREET_NUMBER_SUFFIX_REGEX = new RegExp('^(?:[a-z])?(?:\\s?[a-z0-9]{1,4})?$', 'i');
 
 	const LookupHandler = function ( fields ) {
 		this.cache = {};
+
+		this.xhr = null;
 		this.lookupTimeout = null;
 
 		this.prefix = fields.prefix;
@@ -54,8 +56,7 @@ jQuery( function ( $ ) {
 			$.each( interactionElements, ( index, el ) => {
 
 				$( el ).on( 'keyup', this.delayedLookup.bind(this) );
-				$( el ).on( 'blur', this.performLookup.bind(this) );
-
+				//$( el ).on( 'blur', this.performLookup.bind(this) );
 			});
 
 			this.applyFieldsLock();
@@ -63,7 +64,6 @@ jQuery( function ( $ ) {
 		} else {
 			$.each( interactionElements, ( index, el ) => {
 				el.off( 'keyup' );
-				el.off( 'blur' );
 			});
 
 			this.hardResetFields();
@@ -99,7 +99,7 @@ jQuery( function ( $ ) {
 		this.$state.val( '' ).trigger( 'change' );
 
 		if ( typeof this.$spinner !== 'undefined' ) {
-			this.$spinner.hide();
+			this.stopLoading()
 		}
 	};
 
@@ -120,7 +120,7 @@ jQuery( function ( $ ) {
 
 		this.lookupTimeout = setTimeout( () => {
 			this.performLookup();
-		}, 350);
+		}, 150);
 	};
 
 	LookupHandler.prototype.performLookup = function () {
@@ -131,7 +131,8 @@ jQuery( function ( $ ) {
 		if ( ! this.isValidPostcode() || ! this.isValidStreetNumber() || ! this.isValidStreetNumberSuffix() ) {
 			this.softResetFields();
 		} else {
-			this.$spinner.show();
+			this.startLoading();
+
 			this.$message.hide();
 
 			const params = {
@@ -149,10 +150,14 @@ jQuery( function ( $ ) {
 
 		const cacheKey = spikkl_params.url + JSON.stringify( Object.values( params ) );
 
+		if (this.xhr) {
+			this.xhr.abort();
+		}
+
 		if ( this.cache.hasOwnProperty( cacheKey ) ) {
 			this.fillFields( this.cache[ cacheKey ] );
 		} else {
-			$.ajax({
+			this.xhr = $.ajax({
 				crossDomain: true,
 				type: 'GET',
 				dataType: 'json',
@@ -179,8 +184,24 @@ jQuery( function ( $ ) {
 		}
 	};
 
-	LookupHandler.prototype.fillFields = function ( json ) {
+	LookupHandler.prototype.startLoading = function () {
+		this.$spinner.show();
+
+		this.$postcode.attr('disabled', true);
+		this.$streetNumber.attr('disabled', true);
+		this.$streetNumberSuffix.attr('disabled', true);
+	}
+
+	LookupHandler.prototype.stopLoading = function () {
 		this.$spinner.hide();
+
+		this.$postcode.attr('disabled', false);
+		this.$streetNumber.attr('disabled', false);
+		this.$streetNumberSuffix.attr('disabled', false);
+	}
+
+	LookupHandler.prototype.fillFields = function ( json ) {
+		this.stopLoading();
 
 		if ( json.status === 'ok' && json.results.length >= 1) {
 			this.$postcode.val( json.results[0].postal_code );
@@ -251,7 +272,6 @@ jQuery( function ( $ ) {
 
 	LookupHandler.prototype.isValidStreetNumberSuffix = function () {
 		const streetNumberSuffix = this.$streetNumberSuffix.val();
-
 
 		if ( DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix ) ) {
 			return true;
