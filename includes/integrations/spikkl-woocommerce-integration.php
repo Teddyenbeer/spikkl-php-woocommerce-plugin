@@ -106,7 +106,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
 
             $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
-            wp_register_script( 'spikkl_address_lookup', plugins_url( '/assets/js/spikkl-address-lookup' . $suffix . '.js', SPIKKL_PLUGIN_FILE ), array( 'jquery', 'woocommerce' ) );
+            wp_register_script( 'spikkl_address_lookup', plugins_url( '/assets/js/spikkl-address-lookup' . $suffix . '.js', SPIKKL_PLUGIN_FILE ), array( 'jquery', 'woocommerce' ), Spikkl::$version );
 
             wp_enqueue_script( 'spikkl_address_lookup' );
 
@@ -128,7 +128,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 )
             ));
 
-            wp_enqueue_style('spikkl_address_lookup', plugins_url( 'assets/css/spikkl-address-lookup' . $suffix . '.css', SPIKKL_PLUGIN_FILE ) );
+            wp_enqueue_style('spikkl_address_lookup', plugins_url( 'assets/css/spikkl-address-lookup' . $suffix . '.css', SPIKKL_PLUGIN_FILE ), array(), Spikkl::$version );
         }
 
         public function override_default_address_fields( $fields ) {

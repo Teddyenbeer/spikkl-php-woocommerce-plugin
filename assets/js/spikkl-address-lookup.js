@@ -53,10 +53,14 @@ jQuery( function ( $ ) {
 		const interactionElements = [ this.$postcode, this.$streetNumber, this.$streetNumberSuffix ];
 
 		if ( this.isCountryEligibleForLookup( selectedCountryCode ) ) {
+
+			this.$postcode.on( 'keyup blur', this.debounce( this.validatePostcode, 250 ) );
+			this.$streetNumber.on( 'keyup blur', this.debounce( this.validateStreetNumber, 250 ) );
+			this.$streetNumberSuffix.on( 'keyup blur', this.debounce( this.validateStreetNumberSuffix, 250 ) );
+
 			$.each( interactionElements, ( index, el ) => {
 
-				$( el ).on( 'keyup', this.delayedLookup.bind(this) );
-				//$( el ).on( 'blur', this.performLookup.bind(this) );
+				$( el ).on( 'keyup', this.debounce(this.performLookup, 450) );
 			});
 
 			this.applyFieldsLock();
@@ -115,35 +119,49 @@ jQuery( function ( $ ) {
 		this.softResetFields();
 	};
 
-	LookupHandler.prototype.delayedLookup = function () {
-		clearTimeout( this.lookupTimeout );
+	LookupHandler.prototype.debounce = function (func, wait = 450) {
+		let timeout;
+		const context = this;
 
-		this.lookupTimeout = setTimeout( () => {
-			this.performLookup();
-		}, 150);
+		return function () {
+			const delay = function () {
+				timeout = null;
+				func.apply(context);
+			}
+
+			clearTimeout(timeout);
+
+			timeout = setTimeout(delay, wait);
+		};
 	};
 
 	LookupHandler.prototype.performLookup = function () {
+		if (
+			! this.isValidPostcode() ||
+			! this.isValidStreetNumber() ||
+			! this.isValidStreetNumberSuffix()
+		) {
+			this.softResetFields();
+
+			return;
+		}
+
 		const postcode = this.$postcode.val();
 		const streetNumber = this.$streetNumber.val();
 		const streetNumberSuffix = this.$streetNumberSuffix.val();
 
-		if ( ! this.isValidPostcode() || ! this.isValidStreetNumber() || ! this.isValidStreetNumberSuffix() ) {
-			this.softResetFields();
-		} else {
-			this.startLoading();
+		this.startLoading();
 
-			this.$message.hide();
+		this.$message.hide();
 
-			const params = {
-				action: spikkl_params.action,
-				postal_code: encodeURIComponent( postcode ),
-				street_number: encodeURIComponent( streetNumber ),
-				street_number_suffix: encodeURIComponent( streetNumberSuffix ),
-			};
+		const params = {
+			action: spikkl_params.action,
+			postal_code: encodeURIComponent( postcode ),
+			street_number: encodeURIComponent( streetNumber ),
+			street_number_suffix: encodeURIComponent( streetNumberSuffix ),
+		};
 
-			this.cachedGet( params );
-		}
+		this.cachedGet( params );
 	};
 
 	LookupHandler.prototype.cachedGet = function ( params ) {
@@ -236,7 +254,7 @@ jQuery( function ( $ ) {
 		}
 	};
 
-	LookupHandler.prototype.isValidPostcode = function () {
+	LookupHandler.prototype.validatePostcode = function () {
 		const postcode = this.$postcode.val();
 
 		if ( postcode === null || postcode === '' ) {
@@ -244,16 +262,15 @@ jQuery( function ( $ ) {
 		}
 
 		if ( DUTCH_POSTCODE_REGEX.test( postcode ) ) {
-			return true;
+			this.$postcodeField.removeClass('woocommerce-invalid');
 		} else {
-			this.$message.empty().append( '<li>' + spikkl_params.errors.invalid_postal_code + '</li>' );
-			this.$message.show();
+			this.$postcodeField.addClass('woocommerce-invalid');
 		}
 
 		return false;
-	};
+	}
 
-	LookupHandler.prototype.isValidStreetNumber = function () {
+	LookupHandler.prototype.validateStreetNumber = function () {
 		const streetNumber = this.$streetNumber.val();
 
 		if ( streetNumber === null || streetNumber === '' ) {
@@ -268,19 +285,37 @@ jQuery( function ( $ ) {
 		}
 
 		return false;
+	}
+
+	LookupHandler.prototype.validateStreetNumberSuffix = function () {
+		const streetNumberSuffix = this.$streetNumberSuffix.val();
+
+		if ( DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix ) ) {
+			this.$streetNumberSuffixField.removeClass('woocommerce-invalid');
+			return true;
+		} else {
+			this.$streetNumberSuffixField.addClass('woocommerce-invalid');
+		}
+
+		return false;
+	};
+
+	LookupHandler.prototype.isValidPostcode = function () {
+		const postcode = this.$postcode.val();
+
+		return postcode !== null && postcode !== '' && DUTCH_POSTCODE_REGEX.test( postcode );
+	};
+
+	LookupHandler.prototype.isValidStreetNumber = function () {
+		const streetNumber = this.$streetNumber.val();
+
+		return streetNumber !== null && streetNumber !== '' && DUTCH_STREET_NUMBER_REGEX.test( streetNumber );
 	};
 
 	LookupHandler.prototype.isValidStreetNumberSuffix = function () {
 		const streetNumberSuffix = this.$streetNumberSuffix.val();
 
-		if ( DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix ) ) {
-			return true;
-		} else {
-			this.$message.empty().append( '<li>' + spikkl_params.errors.invalid_street_number_suffix + '</li>' );
-			this.$message.show();
-		}
-
-		return false;
+		return DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix );
 	};
 
 	LookupHandler.prototype.setHelperElements = function () {
