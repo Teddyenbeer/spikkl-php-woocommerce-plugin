@@ -285,13 +285,13 @@ jQuery( function ( $ ) {
 		}
 
 		if ( DUTCH_STREET_NUMBER_REGEX.test( streetNumber ) ) {
-			this.$streetNumberSuffixField.removeClass('woocommerce-invalid');
+			this.$streetNumberField.removeClass('woocommerce-invalid');
 
-			if ( !this.$postcode.is( ':focus') ) {
+			if ( !this.$streetNumber.is( ':focus') ) {
 				this.performLookup();
 			}
 		} else {
-			this.$streetNumberSuffixField.addClass('woocommerce-invalid');
+			this.$streetNumberField.addClass('woocommerce-invalid');
 		}
 	}
 
@@ -303,7 +303,7 @@ jQuery( function ( $ ) {
 		if ( DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix ) ) {
 			this.$streetNumberSuffixField.removeClass('woocommerce-invalid');
 
-			if ( !this.$postcode.is( ':focus') ) {
+			if ( !this.$streetNumberSuffix.is( ':focus') ) {
 				this.performLookup();
 			}
 		} else {
