@@ -104,7 +104,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
 
             $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
-            wp_register_script( 'spikkl_address_lookup', plugins_url( '/assets/js/spikkl-address-lookup' . $suffix . '.js', SPIKKL_PLUGIN_FILE ), array( 'jquery', 'woocommerce' ), Spikkl::$version );
+            wp_register_script( 'spikkl_address_lookup', plugins_url( '/assets/js/spikkl-address-lookup' . $suffix . '.js', SPIKKL_PLUGIN_FILE ), array( 'jquery', 'wc-checkout' ), Spikkl::$version, true );
 
             wp_enqueue_script( 'spikkl_address_lookup' );
 
@@ -136,28 +136,28 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
 
             $fields['address_3'] = array(
                 'label'         => __( 'Street name', 'spikkl' ),
-                'priority'      => 60,
-                'required'      => true,
-                'type'          => 'text'
+                'class'         => array( 'form-row-wide' ),
+                'required'      => false,
+                'type'          => 'text',
+                'priority'      => 60
             );
 
             $fields['address_4'] = array(
                 'label'         => __( 'Street number', 'spikkl' ),
-                'required'      => true,
-                'type'          => 'text',
                 'class'         => array( 'form-row-first' ),
+                'required'      => false,
+                'type'          => 'text',
+                'priority'      => 50,
                 'autocomplete'  => false,
-                'priority'      => 50
             );
 
             $fields['address_5'] = array(
                 'label'        => __( 'Street number suffix', 'spikkl' ),
+                'class'        => array( 'form-row-last' ),
                 'required'     => false,
                 'type'         => 'text',
-                'class'        => array( 'form-row-last' ),
-                'validate'     => array( 'suffix' ),
-                'autocomplete' => false,
-                'priority'     => 55
+                'priority'     => 55,
+                'autocomplete' => false
             );
 
             return $fields;
@@ -180,6 +180,12 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 'address_2' => array(
                     'hidden' => true,
                     'required' => false
+                ),
+                'address_3' => array(
+                    'required' => true
+                ),
+                'address_4' => array(
+                    'required' => true
                 ),
                 'city' => array(
                     'priority' => 80,

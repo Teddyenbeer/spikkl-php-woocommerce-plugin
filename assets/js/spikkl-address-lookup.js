@@ -2,7 +2,7 @@
 /* global woocommerce_params */
 /* global spikkl_billing_fields */
 /* global spikkl_shipping_fields */
-jQuery( function ( $ ) {
+jQuery( document ).ready( function( $ ) {
 
 	if ( typeof spikkl_params === 'undefined' ) {
 		return false;
@@ -39,14 +39,19 @@ jQuery( function ( $ ) {
 		this.setHelperElements();
 
 		this.$country.on( 'change', () => {
-
-			let selectedCountryCode = this.getSelectedCountryCode();
-
-			this.reorderFields( selectedCountryCode );
-			this.listen( selectedCountryCode );
+			this.setupFields();
 		});
 
-		this.$country.trigger( 'change' );
+		this.setupFields( fields.prefix );
+	};
+
+	LookupHandler.prototype.setupFields = function ( prefix ) {
+		let selectedCountryCode = this.getSelectedCountryCode();
+
+		this.reorderFields( selectedCountryCode );
+		this.listen( selectedCountryCode );
+
+		this.autoFillMyParcelFields( prefix );
 	};
 
 	LookupHandler.prototype.listen = function ( selectedCountryCode ) {
@@ -66,6 +71,14 @@ jQuery( function ( $ ) {
 			this.hardResetFields();
 			this.releaseFieldsLock();
 		}
+	};
+
+	LookupHandler.prototype.autoFillMyParcelFields = function ( prefix ) {
+		$( document.body ).on( 'update_checkout', () => {
+			$('#' + prefix + '_street_name_field' ).find( ':input' ).val( this.$street.val() );
+			$('#' + prefix + '_house_number_field' ).find( ':input' ).val( this.$streetNumber.val() );
+			$('#' + prefix + '_house_number_suffix_field' ).find( ':input' ).val( this.$streetNumberSuffix.val() );
+		})
 	};
 
 	LookupHandler.prototype.applyFieldsLock = function () {
@@ -285,13 +298,13 @@ jQuery( function ( $ ) {
 		}
 
 		if ( DUTCH_STREET_NUMBER_REGEX.test( streetNumber ) ) {
-			this.$streetNumberField.removeClass('woocommerce-invalid');
+			this.$streetNumberSuffixField.removeClass('woocommerce-invalid');
 
-			if ( !this.$streetNumber.is( ':focus') ) {
+			if ( !this.$postcode.is( ':focus') ) {
 				this.performLookup();
 			}
 		} else {
-			this.$streetNumberField.addClass('woocommerce-invalid');
+			this.$streetNumberSuffixField.addClass('woocommerce-invalid');
 		}
 	}
 
@@ -303,7 +316,7 @@ jQuery( function ( $ ) {
 		if ( DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix ) ) {
 			this.$streetNumberSuffixField.removeClass('woocommerce-invalid');
 
-			if ( !this.$streetNumberSuffix.is( ':focus') ) {
+			if ( !this.$postcode.is( ':focus') ) {
 				this.performLookup();
 			}
 		} else {
@@ -348,9 +361,11 @@ jQuery( function ( $ ) {
 
 	LookupHandler.prototype.reorderFields = function ( selectedCountryCode ) {
 		if ( this.isCountryEligibleForLookup( selectedCountryCode ) ) {
+			this.$streetField.show();
 			this.$streetNumberField.show();
 			this.$streetNumberSuffixField.show();
 		} else {
+			this.$streetField.hide();
 			this.$streetNumberField.hide();
 			this.$streetNumberSuffixField.hide();
 		}
@@ -366,21 +381,17 @@ jQuery( function ( $ ) {
 		return spikkl_params.supported_countries.indexOf( selectedCountryCode ) >= 0;
 	};
 
+	/**
+	 * Init LookupHandler when billing fields are set.
+	 */
+	if ( typeof spikkl_billing_fields !== 'undefined' ) {
+		new LookupHandler( spikkl_billing_fields );
+	}
 
-	$( document.body ).bind('wc_address_i18n_ready', function () {
-		/**
-		 * Init LookupHandler when billing fields are set.
-		 */
-		if ( typeof spikkl_billing_fields !== 'undefined' ) {
-			new LookupHandler( spikkl_billing_fields );
-		}
-
-		/**
-		 * Init LookupHandler when billing fields are set.
-		 */
-		if ( typeof spikkl_shipping_fields !== 'undefined' ) {
-			new LookupHandler( spikkl_shipping_fields );
-		}
-	});
-
+	/**
+	 * Init LookupHandler when billing fields are set.
+	 */
+	if ( typeof spikkl_shipping_fields !== 'undefined' ) {
+		new LookupHandler( spikkl_shipping_fields );
+	}
 });
