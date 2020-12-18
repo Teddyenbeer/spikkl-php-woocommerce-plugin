@@ -73,7 +73,14 @@ class Spikkl_Test extends WP_UnitTestCase
 
         $this->assertEquals( 'value', $actual['address_2']['some'] );
 
+        $this->assertArrayHasKey( 'address_3', $actual );
+        $this->assertArrayHasKey( 'address_4', $actual );
         $this->assertArrayHasKey( 'address_5', $actual );
+
+        $this->assertEquals( 'Street name', $actual['address_3']['label'] );
+
+        $this->assertEquals( 'Street number', $actual['address_4']['label'] );
+        $this->assertEquals( array( 'form-row-first' ), $actual['address_4']['class'] );
 
         $this->assertEquals( 'Street number suffix', $actual['address_5']['label'] );
         $this->assertEquals( array( 'form-row-last' ), $actual['address_5']['class'] );

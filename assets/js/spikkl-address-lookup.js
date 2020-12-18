@@ -50,25 +50,18 @@ jQuery( function ( $ ) {
 	};
 
 	LookupHandler.prototype.listen = function ( selectedCountryCode ) {
-		const interactionElements = [ this.$postcode, this.$streetNumber, this.$streetNumberSuffix ];
-
 		if ( this.isCountryEligibleForLookup( selectedCountryCode ) ) {
 
-			this.$postcode.on( 'keyup blur', this.debounce( this.validatePostcode, 250 ) );
-			this.$streetNumber.on( 'keyup blur', this.debounce( this.validateStreetNumber, 250 ) );
-			this.$streetNumberSuffix.on( 'keyup blur', this.debounce( this.validateStreetNumberSuffix, 250 ) );
-
-			$.each( interactionElements, ( index, el ) => {
-
-				$( el ).on( 'keyup', this.debounce(this.performLookup, 450) );
-			});
+			this.$postcode.on( 'blur input', this.debounce( this.validatePostcode, 250 ) );
+			this.$streetNumber.on( 'blur input', this.debounce( this.validateStreetNumber, 250 ) );
+			this.$streetNumberSuffix.on( 'blur input', this.debounce( this.validateStreetNumberSuffix, 250 ) );
 
 			this.applyFieldsLock();
 
 		} else {
-			$.each( interactionElements, ( index, el ) => {
-				el.off( 'keyup' );
-			});
+			this.$postcode.off( 'blur input' );
+			this.$streetNumber.off( 'blur input' );
+			this.$streetNumberSuffix.off( 'blur input' );
 
 			this.hardResetFields();
 			this.releaseFieldsLock();
@@ -222,14 +215,9 @@ jQuery( function ( $ ) {
 		this.stopLoading();
 
 		if ( json.status === 'ok' && json.results.length >= 1) {
-			this.$postcode.val( json.results[0].postal_code );
-			this.$streetNumber.val( json.results[0].street_number );
-			this.$streetNumberSuffix.val( json.results[0].street_number_suffix );
 
-			this.$street.val( json.results[0].street_name );
-			this.$city.val( json.results[0].city );
+			this.fillDefaultFields( json.results[0] );
 
-			this.$state.val( json.results[0].administrative_areas[0].abbreviation ).trigger('change');
 		} else {
 			let translatedMessage;
 
@@ -254,50 +242,73 @@ jQuery( function ( $ ) {
 		}
 	};
 
+	LookupHandler.prototype.fillDefaultFields = function ( results ) {
+		this.$postcode.val( results.postal_code ).change();
+
+		this.$street.val( results.street_name ).change();
+		this.$streetNumber.val( results.street_number ).change();
+		this.$streetNumberSuffix.val( results.street_number_suffix ).change();
+
+		this.$city.val( results.city ).change();
+
+		this.$state.val( results.administrative_areas[0].abbreviation ).change();
+	};
+
 	LookupHandler.prototype.validatePostcode = function () {
 		const postcode = this.$postcode.val();
 
+		this.$message.hide();
+
 		if ( postcode === null || postcode === '' ) {
-			return false;
+			return;
 		}
 
 		if ( DUTCH_POSTCODE_REGEX.test( postcode ) ) {
 			this.$postcodeField.removeClass('woocommerce-invalid');
+
+			if ( !this.$postcode.is( ':focus') ) {
+				this.performLookup();
+			}
+
 		} else {
 			this.$postcodeField.addClass('woocommerce-invalid');
 		}
-
-		return false;
 	}
 
 	LookupHandler.prototype.validateStreetNumber = function () {
 		const streetNumber = this.$streetNumber.val();
 
+		this.$message.hide();
+
 		if ( streetNumber === null || streetNumber === '' ) {
-			return false;
+			return;
 		}
 
 		if ( DUTCH_STREET_NUMBER_REGEX.test( streetNumber ) ) {
-			return true;
-		} else {
-			this.$message.empty().append( '<li>' + spikkl_params.errors.invalid_street_number + '</li>' );
-			this.$message.show();
-		}
+			this.$streetNumberSuffixField.removeClass('woocommerce-invalid');
 
-		return false;
+			if ( !this.$postcode.is( ':focus') ) {
+				this.performLookup();
+			}
+		} else {
+			this.$streetNumberSuffixField.addClass('woocommerce-invalid');
+		}
 	}
 
 	LookupHandler.prototype.validateStreetNumberSuffix = function () {
 		const streetNumberSuffix = this.$streetNumberSuffix.val();
 
+		this.$message.hide();
+
 		if ( DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix ) ) {
 			this.$streetNumberSuffixField.removeClass('woocommerce-invalid');
-			return true;
+
+			if ( !this.$postcode.is( ':focus') ) {
+				this.performLookup();
+			}
 		} else {
 			this.$streetNumberSuffixField.addClass('woocommerce-invalid');
 		}
-
-		return false;
 	};
 
 	LookupHandler.prototype.isValidPostcode = function () {

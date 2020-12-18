@@ -20,27 +20,25 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         private static $_api_endpoint = 'https://api.spikkl.nl/geo/nld/lookup.json';
 
         private static $_billing = array(
-            'scope' => '#main',
             'prefix' => 'billing',
             'company' => '#billing_company',
             'country' => '#billing_country',
             'city' => '#billing_city',
             'state' => '#billing_state',
             'postcode' => '#billing_postcode',
-            'street' => '#billing_address_1',
+            'street' => '#billing_address_3',
             'street_number' => '#billing_address_4',
             'street_number_suffix' => '#billing_address_5',
         );
 
         private static $_shipping = array(
-            'scope' => '#main',
             'prefix' => 'shipping',
             'company' => '#shipping_company',
             'country' => '#shipping_country',
             'city' => '#shipping_city',
             'state' => '#shipping_state',
             'postcode' => '#shipping_postcode',
-            'street' => '#shipping_address_1',
+            'street' => '#shipping_address_3',
             'street_number' => '#shipping_address_4',
             'street_number_suffix' => '#shipping_address_5',
         );
@@ -136,13 +134,20 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 return $fields;
             }
 
+            $fields['address_3'] = array(
+                'label'         => __( 'Street name', 'spikkl' ),
+                'priority'      => 60,
+                'required'      => true,
+                'type'          => 'text'
+            );
+
             $fields['address_4'] = array(
-                'label' => __( 'Street number', 'spikkl' ),
-                'required' => true,
-                'type' => 'text',
-                'class' => array( 'form-row-first' ),
-                'autocomplete' => false,
-                'priority' => 50
+                'label'         => __( 'Street number', 'spikkl' ),
+                'required'      => true,
+                'type'          => 'text',
+                'class'         => array( 'form-row-first' ),
+                'autocomplete'  => false,
+                'priority'      => 50
             );
 
             $fields['address_5'] = array(
@@ -169,10 +174,8 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                     'priority' => 40
                 ),
                 'address_1' => array(
-                    'label' => __( 'Street name', 'spikkl' ),
-                    'priority' => 70,
-                    'placeholder' => '',
-                    'required' => true
+                    'hidden' => true,
+                    'required' => false
                 ),
                 'address_2' => array(
                     'hidden' => true,
@@ -292,8 +295,12 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         }
 
         public function checkout_get_value( $null, $input ) {
-            if ( in_array( $input, [ 'billing_address_4', 'billing_address_5' ] ) ) {
+            if ( in_array( $input, [ 'billing_address_3', 'billing_address_4', 'billing_address_5' ] ) ) {
                 return WC()->session->get("customer_" . $input);
+            }
+
+            if ( $input === 'billing_house_number' ) {
+                return WC()->session->get('customer_billing_address_4');
             }
 
             return $null;
@@ -307,7 +314,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 $data[$v[0]] = $v[1];
             }
 
-            foreach ( [ 'billing_address_4', 'billing_address_5' ] as $key) {
+            foreach ( [ 'billing_address_3', 'billing_address_4', 'billing_address_5' ] as $key) {
                 if ( isset( $data[$key] ) && $data[$key] ) {
                     WC()->session->set("customer_" . $key, $data[$key]);
                 }
@@ -320,14 +327,14 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             }
 
             foreach ( ['billing', 'shipping' ] as $group ) {
-                $streetName = $group . '_address_1';
+                $streetName = $group . '_address_3';
                 $streetNumber = $group . '_address_4';
                 $streetNumberSuffix = $group . '_address_5';
 
-                $posted[$streetName] .= ' ' . $posted[$streetNumber];
+                $posted[$group . '_address_1'] = $posted[$streetName] . ' ' . $posted[$streetNumber];
 
                 if ( isset( $posted[$streetNumberSuffix] ) && $posted[$streetNumberSuffix] ) {
-                    $posted[$streetName] .= $posted[$streetNumberSuffix];
+                    $posted[$group . '_address_1'] .= $posted[$streetNumberSuffix];
                 }
             }
 
