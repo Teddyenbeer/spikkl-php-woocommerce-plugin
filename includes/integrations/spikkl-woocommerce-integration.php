@@ -26,6 +26,8 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             'city' => '#billing_city',
             'state' => '#billing_state',
             'postcode' => '#billing_postcode',
+            'address_1' => '#billing_address_1',
+            'address_2' => '#billing_address_2',
             'street' => '#billing_address_3',
             'street_number' => '#billing_address_4',
             'street_number_suffix' => '#billing_address_5',
@@ -38,6 +40,8 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             'city' => '#shipping_city',
             'state' => '#shipping_state',
             'postcode' => '#shipping_postcode',
+            'address_1' => '#shipping_address_1',
+            'address_2' => '#shipping_address_2',
             'street' => '#shipping_address_3',
             'street_number' => '#shipping_address_4',
             'street_number_suffix' => '#shipping_address_5',
@@ -337,10 +341,12 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                 $streetNumber = $group . '_address_4';
                 $streetNumberSuffix = $group . '_address_5';
 
-                $posted[$group . '_address_1'] = $posted[$streetName] . ' ' . $posted[$streetNumber];
+                if ( isset($posted[$streetName], $posted[$streetNumber]) && $posted[$streetName] && $posted[$streetNumber]) {
+                    $posted[$group . '_address_1'] = $posted[$streetName] . ' ' . $posted[$streetNumber];
 
-                if ( isset( $posted[$streetNumberSuffix] ) && $posted[$streetNumberSuffix] ) {
-                    $posted[$group . '_address_1'] .= $posted[$streetNumberSuffix];
+                    if ( isset( $posted[$streetNumberSuffix] ) && $posted[$streetNumberSuffix] ) {
+                        $posted[$group . '_address_1'] .= $posted[$streetNumberSuffix];
+                    }
                 }
             }
 

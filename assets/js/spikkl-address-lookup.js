@@ -23,6 +23,8 @@ jQuery( document ).ready( function( $ ) {
 		this.$countryField = $( fields.country + '_field' );
 		this.$stateField = $( fields.state + '_field' );
 		this.$cityField = $( fields.city + '_field' );
+		this.$address1Field = $( fields.address_1 + '_field' );
+		this.$address2Field = $( fields.address_2 + '_field' );
 		this.$streetField = $( fields.street + '_field' );
 		this.$postcodeField = $( fields.postcode + '_field' );
 		this.$streetNumberField = $( fields.street_number + '_field' );
@@ -31,6 +33,8 @@ jQuery( document ).ready( function( $ ) {
 		this.$country = this.$countryField.find( ':input' );
 		this.$state = this.$stateField.find( ':input' );
 		this.$city = this.$cityField.find( ':input' );
+		this.$address1 = this.$address1Field.find( ':input' );
+		this.$address2 = this.$address2Field.find( ':input' );
 		this.$street = this.$streetField.find( ':input' );
 		this.$postcode = this.$postcodeField.find( ':input' );
 		this.$streetNumber = this.$streetNumberField.find( ':input' );
@@ -342,6 +346,15 @@ jQuery( document ).ready( function( $ ) {
 		return DUTCH_STREET_NUMBER_SUFFIX_REGEX.test( streetNumberSuffix );
 	};
 
+	LookupHandler.prototype.markFieldsAsRequired = function ( fields ) {
+		const required = '<abbr class="required" title="">*</abbr>';
+
+		fields.forEach( field => {
+			field.find('label').children().remove();
+			field.addClass( 'validated-required' ).find('label').append(required);
+		});
+	};
+
 	LookupHandler.prototype.setHelperElements = function () {
 		this.$spinner = $( '<div>', {
 			id: 'spikkl-' + this.prefix + '-spinner',
@@ -361,13 +374,25 @@ jQuery( document ).ready( function( $ ) {
 
 	LookupHandler.prototype.reorderFields = function ( selectedCountryCode ) {
 		if ( this.isCountryEligibleForLookup( selectedCountryCode ) ) {
+			this.markFieldsAsRequired( [ this.$streetField, this.$streetNumberField ] );
+
 			this.$streetField.show();
 			this.$streetNumberField.show();
 			this.$streetNumberSuffixField.show();
+
+			this.$address1Field.hide();
+			this.$address2Field.hide();
+
+			this.$countryField.after(this.$postcodeField);
 		} else {
 			this.$streetField.hide();
 			this.$streetNumberField.hide();
 			this.$streetNumberSuffixField.hide();
+
+			this.$address1Field.show();
+			this.$address2Field.show();
+
+			this.$cityField.before(this.$postcodeField);
 		}
 	};
 
@@ -391,7 +416,7 @@ jQuery( document ).ready( function( $ ) {
 	/**
 	 * Init LookupHandler when billing fields are set.
 	 */
-	if ( typeof spikkl_shipping_fields !== 'undefined' ) {
+	if ( typeof spikkl_shipping_fields !== 'undefined' && $( '.ship-to-different-address-checkbox' ).length ) {
 		new LookupHandler( spikkl_shipping_fields );
 	}
 });
