@@ -40,6 +40,10 @@ jQuery( document ).ready( function( $ ) {
 		this.$streetNumber = this.$streetNumberField.find( ':input' );
 		this.$streetNumberSuffix = this.$streetNumberSuffixField.find( ':input' );
 
+		if (! this.isCheckout()) {
+			return;
+		}
+
 		this.setHelperElements();
 
 		this.$country.on( 'change', () => {
@@ -398,6 +402,10 @@ jQuery( document ).ready( function( $ ) {
 
 	LookupHandler.prototype.getSelectedCountryCode = function () {
 		return this.$country.val().trim();
+	};
+
+	LookupHandler.prototype.isCheckout = function () {
+		return this.$country.length > 0 && this.$postcode.length > 0 && this.$city.length > 0;
 	};
 
 	LookupHandler.prototype.isCountryEligibleForLookup = function ( selectedCountryCode ) {

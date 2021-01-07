@@ -102,7 +102,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         }
 
         public function load_scripts() {
-            if ( ! $this->_settings->is_enabled() ) {
+            if ( ! $this->is_enabled() ) {
                 return;
             }
 
@@ -134,7 +134,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         }
 
         public function override_default_address_fields( $fields ) {
-            if ( ! $this->_settings->is_enabled() ) {
+            if ( ! $this->is_enabled() ) {
                 return $fields;
             }
 
@@ -167,9 +167,8 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             return $fields;
         }
 
-        public function overwrite_country_locale( $locale )
-        {
-            if ( ! $this->_settings->is_enabled() ) {
+        public function overwrite_country_locale( $locale ) {
+            if ( ! $this->is_enabled() ) {
                 return $locale;
             }
 
@@ -351,6 +350,16 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             }
 
             return $posted;
+        }
+
+        public function is_enabled() {
+            return $this->_settings->is_enabled() && $this->is_checkout();
+        }
+
+        public function is_checkout() {
+            return is_page( wc_get_page_id( 'checkout' ) ) ||
+                   apply_filters( 'woocommerce_is_checkout', false ) ||
+                   defined('WOOCOMMERCE_CHECKOUT');
         }
 
         public function add_version_string( $version_string ) {
