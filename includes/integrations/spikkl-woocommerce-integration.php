@@ -345,7 +345,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
                     $posted[$group . '_address_1'] = $posted[$streetName] . ' ' . $posted[$streetNumber];
 
                     if ( isset( $posted[$streetNumberSuffix] ) && $posted[$streetNumberSuffix] ) {
-                        $posted[$group . '_address_1'] .= $posted[$streetNumberSuffix];
+                        $posted[$group . '_address_1'] .= ' ' . $posted[$streetNumberSuffix];
                     }
                 }
             }
