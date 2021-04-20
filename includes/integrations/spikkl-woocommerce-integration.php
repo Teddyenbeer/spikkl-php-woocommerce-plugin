@@ -102,7 +102,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         }
 
         public function load_scripts() {
-            if ( ! $this->is_enabled() ) {
+            if ( ! $this->is_checkout() ) {
                 return;
             }
 
@@ -134,7 +134,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         }
 
         public function override_default_address_fields( $fields ) {
-            if ( ! $this->is_enabled() ) {
+            if ( ! $this->_settings->is_enabled() ) {
                 return $fields;
             }
 
@@ -168,7 +168,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         }
 
         public function overwrite_country_locale( $locale ) {
-            if ( ! $this->is_enabled() ) {
+            if ( ! $this->_settings->is_enabled() ) {
                 return $locale;
             }
 
@@ -350,10 +350,6 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
             }
 
             return $posted;
-        }
-
-        public function is_enabled() {
-            return $this->_settings->is_enabled() && $this->is_checkout();
         }
 
         public function is_checkout() {
