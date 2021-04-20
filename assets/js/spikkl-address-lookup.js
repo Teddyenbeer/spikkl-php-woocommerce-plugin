@@ -414,17 +414,11 @@ jQuery( document ).ready( function( $ ) {
 		return spikkl_params.supported_countries.indexOf( selectedCountryCode ) >= 0;
 	};
 
-	/**
-	 * Init LookupHandler when billing fields are set.
-	 */
 	if ( typeof spikkl_billing_fields !== 'undefined' ) {
 		new LookupHandler( spikkl_billing_fields );
 	}
 
-	/**
-	 * Init LookupHandler when billing fields are set.
-	 */
-	if ( typeof spikkl_shipping_fields !== 'undefined' && $( '.ship-to-different-address-checkbox' ).length ) {
+	if ( typeof spikkl_shipping_fields !== 'undefined' && $( '#ship-to-different-address-checkbox' ).length ) {
 		new LookupHandler( spikkl_shipping_fields );
 	}
 });
