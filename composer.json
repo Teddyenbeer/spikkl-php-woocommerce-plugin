@@ -1,6 +1,7 @@
 {
   "name": "spikkl/spikkl-php-woocommerce-plugin",
   "description": "Spikkl Address Lookup plugin for WooCommerce",
+  "type": "wordpress-plugin",
   "require": {
     "php": ">=5.6"
   },
