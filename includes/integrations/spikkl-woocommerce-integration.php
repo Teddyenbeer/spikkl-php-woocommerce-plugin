@@ -296,7 +296,7 @@ if ( ! class_exists( 'Spikkl_Woocommerce_Integration' ) ) {
         public function validate_referrer() {
             $status_code = 'ACCESS_RESTRICTED';
 
-            preg_match( '~' . site_url() . '~', $_SERVER[ 'HTTP_REFERER' ], $matches );
+            preg_match( '~' . get_home_url() . '~', $_SERVER[ 'HTTP_REFERER' ], $matches );
 
             if ( ! isset( $matches[0] ) || ! wp_get_referer() ) {
                 $this->error_occurred( $status_code );
