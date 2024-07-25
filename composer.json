@@ -1,5 +1,5 @@
 {
-  "name": "spikkl/spikkl-php-woocommerce-plugin",
+  "name": "teddyenbeer/spikkl-php-woocommerce-plugin",
   "description": "Spikkl Address Lookup plugin for WooCommerce",
   "type": "wordpress-plugin",
   "version": "1.6.9",
